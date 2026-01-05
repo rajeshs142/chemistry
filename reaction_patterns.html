@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Reaction Patterns</title>
+    <style>
+        :root {
+            --primary: #1e40af;
+            --accent: #3b82f6;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Navigation Sidebar */
+        nav {
+            width: 280px;
+            background: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px 0;
+            display: none;
+        }
+
+        nav h2 { padding: 0 20px; font-size: 1.2rem; border-bottom: 1px solid #334155; padding-bottom: 15px; }
+
+        .nav-btn {
+            padding: 15px 20px;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            background: none;
+            color: #94a3b8;
+            text-align: left;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .nav-btn:hover { background: #1e293b; color: white; }
+        .nav-btn.active { background: var(--primary); color: white; border-left: 4px solid white; }
+
+        /* Content Area */
+        main {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .card {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .formula-block {
+            background: #eff6ff;
+            padding: 15px;
+            border-left: 5px solid var(--primary);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            margin: 15px 0;
+            font-weight: bold;
+        }
+
+        .reasoning-item {
+            border-bottom: 1px solid #e2e8f0;
+            padding: 20px 0;
+        }
+
+        .reasoning-item h3 { color: var(--primary); margin-top: 0; }
+
+        ul { line-height: 1.7; }
+        li { margin-bottom: 10px; }
+
+        .tag {
+            font-size: 0.75rem;
+            background: #dcfce7;
+            color: #166534;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<nav>
+    <h2>Revision Hub</h2>
+    <button class="nav-btn active" onclick="showTab('patterns')">Reaction Patterns</button>
+    <button class="nav-btn" onclick="showTab('reasoning')">Reasoning (Why?)</button>
+    <button class="nav-btn" onclick="showTab('compounds')">Compounds & Uses</button>
+    <button class="nav-btn" onclick="showTab('indicators')">Indicators & Colors</button>
+</nav>
+
+<main>
+    <!-- Tab 1: Reaction Patterns -->
+    <div id="patterns" class="card">
+        <h1>General Reaction Patterns</h1>
+        <p>Master these "Master Formulas" to predict any product in the exam.</p>
+
+        <div class="reasoning-item">
+            <h3>1. Acid + Base (Neutralization)</h3>
+            <div class="formula-block">Acid + Base → Salt + Water</div>
+            <ul>
+                <li><strong>Example:</strong> HCl + NaOH → NaCl + H₂O</li>
+                <li><strong>Key:</strong> H⁺ ions from acid and OH⁻ ions from base combine to form H₂O.</li>
+            </ul>
+        </div>
+
+        <div class="reasoning-item">
+            <h3>2. Acid + Metal</h3>
+            <div class="formula-block">Acid + Metal → Salt + Hydrogen Gas (H₂)</div>
+            <ul>
+                <li><strong>Example:</strong> Zn + H₂SO₄ → ZnSO₄ + H₂</li>
+                <li><strong>Observation:</strong> Brisk effervescence; gas burns with a 'pop' sound.</li>
+            </ul>
+        </div>
+
+        <div class="reasoning-item">
+            <h3>3. Metal Carbonate + Acid</h3>
+            <div class="formula-block">Metal Carbonate + Acid → Salt + CO₂ + H₂O</div>
+            <ul>
+                <li><strong>Example:</strong> Na₂CO₃ + 2HCl → 2NaCl + H₂O + CO₂</li>
+                <li><strong>Test:</strong> CO₂ turns lime water milky.</li>
+            </ul>
+        </div>
+
+        <div class="reasoning-item">
+            <h3>4. Metal Oxide + Water</h3>
+            <div class="formula-block">Metal Oxide + Water → Metal Hydroxide (Base)</div>
+            <ul>
+                <li><strong>Example:</strong> CaO (Quick lime) + H₂O → Ca(OH)₂ (Slaked lime)</li>
+                <li><strong>Nature:</strong> Metal oxides are generally <strong>basic</strong>.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Tab 2: Reasoning Questions -->
+    <div id="reasoning" class="card hidden">
+        <h1>Board Exam "Reasoning" Questions</h1>
+        <p>Bulleted answers for high-weightage conceptual questions.</p>
+
+        <div class="reasoning-item">
+            <h3>Q: Why should curd/sour substances not be kept in brass or copper vessels?</h3>
+            <ul>
+                <li>Curd and sour substances contain <strong>acids</strong>.</li>
+                <li>Acids react with metals (copper/brass) to form <strong>toxic metallic salts</strong>.</li>
+                <li>These salts can cause food poisoning and make the food unfit for consumption.</li>
+            </ul>
+        </div>
+
+        <div class="reasoning-item">
+            <h3>Q: Why does an aqueous solution of an acid conduct electricity?</h3>
+            <ul>
+                <li>Conduction of electricity requires the movement of <strong>free ions</strong>.</li>
+                <li>In water, acids undergo <strong>dissociation</strong> to produce H⁺ (aq) or H₃O⁺ ions.</li>
+                <li>These mobile ions carry electric charge through the solution.</li>
+            </ul>
+        </div>
+
+        <div class="reasoning-item">
+            <h3>Q: Why do ionic compounds have high melting points?</h3>
+            <ul>
+                <li>Ionic compounds consist of positive and negative ions held by strong <strong>electrostatic forces</strong>.</li>
+                <li>A large amount of <strong>thermal energy</strong> is required to break these strong inter-ionic attractions.</li>
+                <li>Hence, they remain solid at room temperature and melt only at very high temperatures.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Tab 3: Compounds and Uses -->
+    <div id="compounds" class="card hidden">
+        <h1>Important Compounds & Their Uses</h1>
+        
+        <div class="reasoning-item">
+            <h3>1. Bleaching Powder <span class="tag">CaOCl₂</span></h3>
+            <ul>
+                <li><strong>Uses:</strong> 
+                    <ul>
+                        <li>Bleaching cotton and linen in textile industries.</li>
+                        <li>Disinfecting drinking water to make it germ-free.</li>
+                        <li>As an oxidizing agent in chemical industries.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="reasoning-item">
+            <h3>2. Baking Soda <span class="tag">NaHCO₃</span></h3>
+            <ul>
+                <li><strong>Chemical Name:</strong> Sodium Hydrogen Carbonate</li>
+                <li><strong>Uses:</strong>
+                    <ul>
+                        <li>Making baking powder (Baking soda + Tartaric acid).</li>
+                        <li>As an <strong>Antacid</strong> to neutralize excess stomach acid.</li>
+                        <li>Used in soda-acid fire extinguishers.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="reasoning-item">
+            <h3>3. Plaster of Paris <span class="tag">CaSO₄.½H₂O</span></h3>
+            <ul>
+                <li><strong>Formation:</strong> Heating Gypsum at 373 K.</li>
+                <li><strong>Uses:</strong>
+                    <ul>
+                        <li>Supporting fractured bones in the right position.</li>
+                        <li>Making toys, decorative materials, and smooth surfaces for walls.</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Tab 4: Indicators -->
+    <div id="indicators" class="card hidden">
+        <h1>Indicators & Color Changes</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Indicator</th>
+                    <th>Color in Acid</th>
+                    <th>Color in Base</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Blue Litmus</td>
+                    <td style="color:red">Red</td>
+                    <td style="color:blue">Blue (No change)</td>
+                </tr>
+                <tr>
+                    <td>Red Litmus</td>
+                    <td style="color:red">Red (No change)</td>
+                    <td style="color:blue">Blue</td>
+                </tr>
+                <tr>
+                    <td>Phenolphthalein</td>
+                    <td>Colorless</td>
+                    <td style="color:magenta">Pink</td>
+                </tr>
+                <tr>
+                    <td>Methyl Orange</td>
+                    <td style="color:red">Red</td>
+                    <td style="color:orange">Yellow</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<script>
+    function showTab(tabId) {
+        // Hide all cards
+        document.querySelectorAll('.card').forEach(card => card.classList.add('hidden'));
+        // Show selected card
+        document.getElementById(tabId).classList.remove('hidden');
+        
+        // Update nav buttons
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+    }
+</script>
+
+</body>
+</html>

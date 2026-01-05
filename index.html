@@ -3,189 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NCERT Class 10 Chemistry Lab Hub</title>
+    <title>Class 10 Chemistry | Lab Hub</title>
     <style>
         :root {
             --bg: #0f172a;
             --card-bg: #1e293b;
             --accent: #38bdf8;
             --text: #f8fafc;
+            --subtext: #94a3b8;
         }
 
         body {
             margin: 0;
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             display: flex;
             flex-direction: column;
-            align-items: center;
             min-height: 100vh;
         }
 
+        /* Global Header */
         header {
-            text-align: center;
-            padding: 50px 20px;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: center;
         }
 
-        header h1 {
-            font-size: 2.5rem;
+        header a {
+            text-decoration: none;
+            color: var(--accent);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
             margin: 0;
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            background: linear-gradient(to right, #38bdf8, #818cf8);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        header p {
-            color: #94a3b8;
-            margin-top: 10px;
-            font-size: 1.1rem;
-        }
-
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
-            max-width: 1100px;
-            width: 90%;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .card {
             background: var(--card-bg);
             border: 1px solid #334155;
-            border-radius: 16px;
-            padding: 30px;
+            border-radius: 12px;
+            padding: 24px;
             text-decoration: none;
             color: inherit;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
+            gap: 12px;
         }
 
         .card:hover {
-            transform: translateY(-10px);
+            transform: translateY(-4px);
             border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 10px 30px rgba(56, 189, 248, 0.1);
         }
 
-        .icon {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
-        .card h2 {
-            margin: 0 0 10px 0;
-            font-size: 1.4rem;
-            color: var(--accent);
-        }
-
-        .card p {
-            font-size: 0.95rem;
-            color: #94a3b8;
-            line-height: 1.5;
-        }
+        .card .icon { font-size: 2rem; }
+        .card h2 { margin: 0; color: var(--accent); font-size: 1.25rem; }
+        .card p { margin: 0; color: var(--subtext); font-size: 0.95rem; line-height: 1.5; }
 
         .footer {
             margin-top: auto;
+            text-align: center;
             padding: 40px;
-            color: #475569;
-            font-size: 0.9rem;
+            color: var(--subtext);
+            font-size: 0.85rem;
+            border-top: 1px solid #334155;
         }
 
-        /* Responsive adjustments */
-        @media (max-width: 600px) {
-            header h1 { font-size: 1.8rem; }
-            .grid { grid-template-columns: 1fr; }
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2rem; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1>Interactive Chemistry Portal</h1>
-        <p>Complete Visual Guide for NCERT Class 10 Science</p>
-    </header>
 
-   <div class="grid">
 
-        <!-- Foundational Concepts -->
+    <div class="hero">
+        <h1>CBSE Class 10 Chemistry</h1>
+        <p style="color: var(--subtext)">Interactive tools, virtual labs, and reasoning guides for CBSE Preparation.</p>
+    </div>
+
+    <div class="grid">
         <a href="atom_visualizer.html" class="card">
             <div class="icon">⚛️</div>
             <h2>Atom Visualizer</h2>
-            <p>Explore Bohr Models, Electron Configurations, and Periodic Table basics.</p>
+            <p>Explore Bohr Models, Electron Configurations, and Atomic structures.</p>
         </a>
 
         <a href="formula_explorer.html" class="card">
-            <div class="icon"> C₂H₅OH</div>
+            <div class="icon">🧪</div>
             <h2>Formula Explorer</h2>
-            <p>Look up chemical formulas, names, properties, and uses of common compounds.</p>
+            <p>Look up chemical formulas, names, and properties of 50+ compounds.</p>
         </a>
 
         <a href="definitions.html" class="card">
             <div class="icon">📖</div>
             <h2>Definitions Dictionary</h2>
-            <p>A comprehensive, searchable dictionary of all key science terms, grouped by chapter.</p>
+            <p>Comprehensive glossary of all key science terms, grouped by chapter.</p>
         </a>
 
-        <!-- Core Concepts & Labs -->
-        <a href="reaction_types.html" class="card">
+        <a href="reaction_patterns.html" class="card">
             <div class="icon">🔄</div>
-            <h2>Reaction Types Guide</h2>
-            <p>An interactive guide to all major chemical reaction types with detailed examples.</p>
+            <h2>Reaction Patterns</h2>
+            <p>Interactive guide to chemical reaction patterns with real examples.</p>
         </a>
-
+<a href="chemical_reactions.html" class="card">
+            <div class="icon">📊</div>
+            <h2>Chemical Reactions with examples</h2>
+            <p>Types of Chemical Reactions with examples.</p>
+        </a>
         <a href="equations_lab.html" class="card">
             <div class="icon">⚖️</div>
             <h2>Equation Balancer</h2>
-            <p>Practice balancing chemical equations with an interactive, step-by-step tool.</p>
+            <p>Practice balancing equations with molecular visualizations.</p>
         </a>
         
         <a href="reactivity_lab.html" class="card">
             <div class="icon">⚡</div>
             <h2>Reactivity Series Lab</h2>
-            <p>A virtual lab for displacement reactions, metal-acid interactions, and extraction theory.</p>
+            <p>Virtual lab for displacement reactions and metal extraction.</p>
         </a>
 
         <a href="indicators.html" class="card">
             <div class="icon">🎨</div>
             <h2>Indicator Guide</h2>
-            <p>A visual guide to Litmus, Phenolphthalein, and other indicators with color changes.</p>
+            <p>Visual guide to Litmus, Phenolphthalein, and Olfactory changes.</p>
         </a>
 
-        <!-- Specific Topics -->
         <a href="carbon_tools.html" class="card">
             <div class="icon">🔗</div>
-            <h2>Carbon Chemistry Lab</h2>
-            <p>Learn organic nomenclature and functional groups with interactive games and tools.</p>
+            <h2>Carbon Chemistry</h2>
+            <p>Organic nomenclature, functional groups, and naming games.</p>
         </a>
 
         <a href="activities.html" class="card">
             <div class="icon">🔬</div>
-            <h2>NCERT Lab Activities</h2>
-            <p>A step-by-step guide to all official NCERT science activities and their conclusions.</p>
+            <h2>Lab Activities</h2>
+            <p>Step-by-step guides to all official NCERT science activities.</p>
         </a>
 
-        <!-- Practice & Reference -->
         <a href="chemistry_qa.html" class="card">
             <div class="icon">🤔</div>
             <h2>Reasoning Q&A</h2>
-            <p>Practice common 'Why' questions from NCERT to master exam-style answers.</p>
+            <p>Master 'Why' questions from NCERT for board exam preparation.</p>
         </a>
         
         <a href="visual_atlas.html" class="card">
             <div class="icon">📊</div>
             <h2>Visual Atlas</h2>
-            <p>Animated diagrams for Electrolysis, pH Scale, Chlor-Alkali, and Micelle formation.</p>
+            <p>Animated diagrams for Electrolysis, pH Scale, and Micelles.</p>
         </a>
-
+                
     </div>
 
-    <div class="footer">
-        Designed for NCERT CBSE Class 10 Chemistry Preparation
-    </div>
+    <footer class="footer">
+        Designed for NCERT CBSE Class 10 Chemistry Preparation | 2026 Edition
+    </footer>
 
 </body>
 </html>
