@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chemistry Student's Atom Visualizer</title>
+    <style>
+        :root {
+            --bg: #0a0f1e;
+            --sidebar: #161d31;
+            --accent: #00f2ff;
+            --text: #e2e8f0;
+            --metal: #fbbf24;
+            --nonmetal: #a855f7;
+            --gas: #22c55e;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        /* --- Left Sidebar: Element List --- */
+        #sidebar {
+            width: 300px;
+            background: var(--sidebar);
+            border-right: 1px solid #2d3748;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            background: #1e293b;
+            text-align: center;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        #element-list {
+            flex-grow: 1;
+            overflow-y: auto;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .el-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #242f42;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: 0.2s;
+        }
+
+        .el-item:hover { background: #2d3748; }
+        .el-item.active { 
+            background: #334155; 
+            border-left: 4px solid var(--accent);
+        }
+
+        .el-item .z-num { width: 30px; opacity: 0.6; font-family: monospace; }
+        .el-item .sym { width: 40px; font-weight: bold; color: var(--accent); }
+
+        /* --- Right Area: Visualizer --- */
+        #main-view {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #canvas-container {
+            flex-grow: 1;
+            position: relative;
+        }
+
+        canvas { width: 100%; height: 100%; }
+
+        /* --- Top Info Card --- */
+        #data-card {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.9);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #334155;
+            min-width: 250px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
+        .badge {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            text-transform: uppercase;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .valency-tag { color: #fb7185; font-weight: bold; }
+        .stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+            font-size: 0.9rem;
+        }
+        .stat-label { opacity: 0.6; display: block; font-size: 0.75rem; }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <h3 style="margin:0">Class 10-12 Elements</h3>
+            <small style="opacity:0.6">Select an element to visualize</small>
+        </div>
+        <ul id="element-list"></ul>
+    </div>
+
+    <div id="main-view">
+        <div id="data-card">
+            <h1 id="det-name" style="margin:0; color: var(--accent);">Hydrogen</h1>
+            <span id="det-cat" class="badge" style="background: var(--gas);">Noble Gas</span>
+            
+            <div class="stat-grid">
+                <div><span class="stat-label">Atomic Mass</span><span id="det-mass">1.008</span> u</div>
+                <div><span class="stat-label">Valency</span><span id="det-val" class="valency-tag">1</span></div>
+                <div><span class="stat-label">Configuration</span><span id="det-conf" style="font-family: monospace;">1</span></div>
+                <div><span class="stat-label">Neutrons</span><span id="det-neu">0</span></div>
+            </div>
+        </div>
+        <div id="canvas-container">
+            <canvas id="atomCanvas"></canvas>
+        </div>
+    </div>
+
+<script>
+    // Comprehensive Data for Class 10, 11, 12
+    const elements = [
+        { z: 1, s: "H", n: "Hydrogen", mass: 1.008, v: "1", cat: "Non-metal", sh: [1] },
+        { z: 2, s: "He", n: "Helium", mass: 4.002, v: "0", cat: "Noble Gas", sh: [2] },
+        { z: 3, s: "Li", n: "Lithium", mass: 6.941, v: "1", cat: "Alkali Metal", sh: [2, 1] },
+        { z: 6, s: "C", n: "Carbon", mass: 12.011, v: "4", cat: "Non-metal", sh: [2, 4] },
+        { z: 7, s: "N", n: "Nitrogen", mass: 14.007, v: "3, 5", cat: "Non-metal", sh: [2, 5] },
+        { z: 8, s: "O", n: "Oxygen", mass: 15.999, v: "2", cat: "Non-metal", sh: [2, 6] },
+        { z: 10, s: "Ne", n: "Neon", mass: 20.180, v: "0", cat: "Noble Gas", sh: [2, 8] },
+        { z: 11, s: "Na", n: "Sodium", mass: 22.990, v: "1", cat: "Alkali Metal", sh: [2, 8, 1] },
+        { z: 12, s: "Mg", n: "Magnesium", mass: 24.305, v: "2", cat: "Alkaline Earth", sh: [2, 8, 2] },
+        { z: 13, s: "Al", n: "Aluminium", mass: 26.982, v: "3", cat: "Post-transition", sh: [2, 8, 3] },
+        { z: 17, s: "Cl", n: "Chlorine", mass: 35.45, v: "1", cat: "Halogen", sh: [2, 8, 7] },
+        { z: 18, s: "Ar", n: "Argon", mass: 39.948, v: "0", cat: "Noble Gas", sh: [2, 8, 8] },
+        { z: 20, s: "Ca", n: "Calcium", mass: 40.078, v: "2", cat: "Alkaline Earth", sh: [2, 8, 8, 2] },
+        { z: 26, s: "Fe", n: "Iron", mass: 55.845, v: "2, 3", cat: "Transition Metal", sh: [2, 8, 14, 2] },
+        { z: 29, s: "Cu", n: "Copper", mass: 63.546, v: "1, 2", cat: "Transition Metal", sh: [2, 8, 18, 1] },
+        { z: 30, s: "Zn", n: "Zinc", mass: 65.38, v: "2", cat: "Transition Metal", sh: [2, 8, 18, 2] },
+        { z: 47, s: "Ag", n: "Silver", mass: 107.87, v: "1", cat: "Transition Metal", sh: [2, 8, 18, 18, 1] },
+        { z: 79, s: "Au", n: "Gold", mass: 196.97, v: "1, 3", cat: "Transition Metal", sh: [2, 8, 18, 32, 18, 1] },
+        { z: 80, s: "Hg", n: "Mercury", mass: 200.59, v: "1, 2", cat: "Transition Metal", sh: [2, 8, 18, 32, 18, 2] },
+        { z: 82, s: "Pb", n: "Lead", mass: 207.2, v: "2, 4", cat: "Post-transition", sh: [2, 8, 18, 32, 18, 4] }
+    ];
+
+    const shellNames = ["K", "L", "M", "N", "O", "P", "Q"];
+    let currentEl = elements[0];
+    let angle = 0;
+
+    const canvas = document.getElementById('atomCanvas');
+    const ctx = canvas.getContext('2d');
+    const listContainer = document.getElementById('element-list');
+
+    function init() {
+        elements.forEach((el, idx) => {
+            const li = document.createElement('li');
+            li.className = `el-item ${idx === 0 ? 'active' : ''}`;
+            li.innerHTML = `<span class="z-num">${el.z}</span><span class="sym">${el.s}</span><span>${el.n}</span>`;
+            li.onclick = () => {
+                document.querySelectorAll('.el-item').forEach(item => item.classList.remove('active'));
+                li.classList.add('active');
+                updateElement(el);
+            };
+            listContainer.appendChild(li);
+        });
+        updateElement(elements[0]);
+        resize();
+        draw();
+    }
+
+    function updateElement(el) {
+        currentEl = el;
+        document.getElementById('det-name').innerText = el.n;
+        document.getElementById('det-mass').innerText = el.mass;
+        document.getElementById('det-val').innerText = el.v;
+        document.getElementById('det-conf').innerText = el.sh.join(', ');
+        document.getElementById('det-cat').innerText = el.cat;
+        document.getElementById('det-neu').innerText = Math.round(el.mass - el.z);
+    }
+
+    function resize() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+
+        // 1. Nucleus (Protons + Neutrons)
+        const nucGradient = ctx.createRadialGradient(cx, cy, 2, cx, cy, 30);
+        nucGradient.addColorStop(0, '#ff5f6d');
+        nucGradient.addColorStop(1, '#ffc371');
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+        ctx.fillStyle = nucGradient;
+        ctx.shadowBlur = 20;
+        ctx.shadowColor = "#ff5f6d";
+        ctx.fill();
+        ctx.shadowBlur = 0;
+
+        ctx.fillStyle = "white";
+        ctx.font = "bold 12px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(`${currentEl.z} P+`, cx, cy - 2);
+        ctx.fillText(`${Math.round(currentEl.mass - currentEl.z)} N⁰`, cx, cy + 12);
+
+        // 2. Shells
+        currentEl.sh.forEach((count, i) => {
+            const radius = 70 + (i * 50);
+            
+            // Draw Shell Ring
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+            ctx.strokeStyle = "rgba(255,255,255,0.15)";
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Label: K (2)
+            ctx.fillStyle = "rgba(255,255,255,0.7)";
+            ctx.font = "bold 13px monospace";
+            ctx.textAlign = "left";
+            ctx.fillText(`${shellNames[i]} (${count})`, cx + radius + 8, cy + 5);
+
+            // Electrons
+            for (let j = 0; j < count; j++) {
+                const rotation = (angle * (1 / (i + 1))) + (j * (Math.PI * 2 / count));
+                const ex = cx + radius * Math.cos(rotation);
+                const ey = cy + radius * Math.sin(rotation);
+
+                ctx.beginPath();
+                ctx.arc(ex, ey, 7, 0, Math.PI * 2);
+                ctx.fillStyle = varColor('--accent');
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = varColor('--accent');
+                ctx.fill();
+                ctx.shadowBlur = 0;
+                
+                // Minus sign on electron
+                ctx.fillStyle = "black";
+                ctx.font = "bold 10px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText("-", ex, ey + 3);
+            }
+        });
+
+        angle += 0.015;
+        requestAnimationFrame(draw);
+    }
+
+    // Helper to get CSS variables
+    function varColor(name) {
+        return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    }
+
+    window.onresize = resize;
+    init();
+</script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Chemical Formulas</title>
+    <style>
+        :root {
+            --primary-bg: #f4f7f9;
+            --secondary-bg: #ffffff;
+            --sidebar-bg: #1e2a3a;
+            --header-bg: #e9edf1;
+            --text-color: #333;
+            --sidebar-text: #d0d8e2;
+            --sidebar-hover: #3a4b62;
+            --border-color: #d1d9e0;
+            --link-color: #007bff;
+            --code-bg: #eef2f5;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+        }
+        #sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+        #sidebar h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #fff;
+            border-bottom: 1px solid var(--sidebar-hover);
+            padding-bottom: 15px;
+        }
+        #sidebar ul { list-style-type: none; }
+        #sidebar li a {
+            display: block;
+            color: var(--sidebar-text);
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        #sidebar li a:hover {
+            background-color: var(--sidebar-hover);
+            color: #fff;
+        }
+        #content {
+            margin-left: 260px;
+            padding: 40px;
+            width: calc(100% - 260px);
+        }
+        section {
+            background-color: var(--secondary-bg);
+            border-radius: 8px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--link-color);
+            color: var(--sidebar-bg);
+        }
+        h3 {
+            font-size: 1.5rem;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: var(--text-color);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+        }
+        thead { background-color: var(--header-bg); font-weight: bold; }
+        tbody tr:nth-child(even) { background-color: var(--primary-bg); }
+        tbody tr:hover { background-color: #dceefd; }
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            background-color: var(--code-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.95em;
+        }
+        sup, sub { line-height: 0; }
+        @media (max-width: 992px) {
+            body { flex-direction: column; }
+            #sidebar { position: static; width: 100%; height: auto; }
+            #content { margin-left: 0; width: 100%; padding: 20px; }
+            h2 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav id="sidebar">
+        <h1>Chemical Formulas</h1>
+        <ul id="nav-links">
+            <!-- Navigation links will be generated here by JavaScript -->
+        </ul>
+    </nav>
+
+    <main id="content">
+        <!-- Content sections will be generated here by JavaScript -->
+    </main>
+
+<script>
+// --- PASTE YOUR JSON DATA HERE ---
+const jsonData = {
+  "chemical_formulas": {
+    "acids": [
+      {"common_name": "Hydrochloric acid", "chemical_name": "Hydrogen chloride", "formula": "HCl", "ionization": "H⁺ + Cl⁻"},
+      {"common_name": "Sulphuric acid", "chemical_name": "Hydrogen sulphate", "formula": "H₂SO₄", "ionization": "2H⁺ + SO₄²⁻"},
+      {"common_name": "Nitric acid", "chemical_name": "Hydrogen nitrate", "formula": "HNO₃", "ionization": "H⁺ + NO₃⁻"},
+      {"common_name": "Carbonic acid", "chemical_name": "Carbonic acid", "formula": "H₂CO₃", "ionization": "2H⁺ + CO₃²⁻"},
+      {"common_name": "Acetic acid", "chemical_name": "Ethanoic acid", "formula": "CH₃COOH", "ionization": "CH₃COO⁻ + H⁺"},
+      {"common_name": "Phosphoric acid", "chemical_name": "Orthophosphoric acid", "formula": "H₃PO₄", "ionization": "3H⁺ + PO₄³⁻"},
+      {"common_name": "Sulphurous acid", "chemical_name": "Sulphurous acid", "formula": "H₂SO₃", "ionization": "2H⁺ + SO₃²⁻"},
+      {"common_name": "Oxalic acid", "chemical_name": "Ethanedioic acid", "formula": "(COOH)₂", "ionization": "2H⁺ + C₂O₄²⁻"},
+      {"common_name": "Formic acid", "chemical_name": "Methanoic acid", "formula": "HCOOH", "ionization": "HCOO⁻ + H⁺"},
+      {"common_name": "Boric acid", "chemical_name": "Orthoboric acid", "formula": "H₃BO₃", "ionization": "H⁺ + H₂BO₃⁻"}
+    ],
+    "bases": [
+      {"common_name": "Sodium hydroxide", "chemical_name": "Sodium hydroxide", "formula": "NaOH", "ionization": "Na⁺ + OH⁻"},
+      {"common_name": "Potassium hydroxide", "chemical_name": "Potassium hydroxide", "formula": "KOH", "ionization": "K⁺ + OH⁻"},
+      {"common_name": "Calcium hydroxide", "chemical_name": "Calcium hydroxide", "formula": "Ca(OH)₂", "ionization": "Ca²⁺ + 2OH⁻"},
+      {"common_name": "Magnesium hydroxide", "chemical_name": "Magnesium hydroxide", "formula": "Mg(OH)₂", "ionization": "Mg²⁺ + 2OH⁻"},
+      {"common_name": "Ammonium hydroxide", "chemical_name": "Ammonium hydroxide", "formula": "NH₄OH", "ionization": "NH₄⁺ + OH⁻"},
+      {"common_name": "Aluminium hydroxide", "chemical_name": "Aluminium hydroxide", "formula": "Al(OH)₃", "ionization": "Al³⁺ + 3OH⁻"},
+      {"common_name": "Ferrous hydroxide", "chemical_name": "Iron(II) hydroxide", "formula": "Fe(OH)₂", "ionization": "Fe²⁺ + 2OH⁻"},
+      {"common_name": "Ferric hydroxide", "chemical_name": "Iron(III) hydroxide", "formula": "Fe(OH)₃", "ionization": "Fe³⁺ + 3OH⁻"},
+      {"common_name": "Copper(II) hydroxide", "chemical_name": "Cupric hydroxide", "formula": "Cu(OH)₂", "ionization": "Cu²⁺ + 2OH⁻"},
+      {"common_name": "Zinc hydroxide", "chemical_name": "Zinc hydroxide", "formula": "Zn(OH)₂", "ionization": "Zn²⁺ + 2OH⁻"}
+    ],
+    "salts": [
+      {"common_name": "Sodium chloride", "chemical_name": "Sodium chloride", "formula": "NaCl"},
+      {"common_name": "Potassium chloride", "chemical_name": "Potassium chloride", "formula": "KCl"},
+      {"common_name": "Calcium chloride", "chemical_name": "Calcium chloride", "formula": "CaCl₂"},
+      {"common_name": "Magnesium chloride", "chemical_name": "Magnesium chloride", "formula": "MgCl₂"},
+      {"common_name": "Sodium carbonate", "chemical_name": "Sodium carbonate", "formula": "Na₂CO₃"},
+      {"common_name": "Sodium bicarbonate", "chemical_name": "Sodium hydrogen carbonate", "formula": "NaHCO₃"},
+      {"common_name": "Potassium carbonate", "chemical_name": "Potassium carbonate", "formula": "K₂CO₃"},
+      {"common_name": "Calcium carbonate", "chemical_name": "Calcium carbonate", "formula": "CaCO₃"},
+      {"common_name": "Magnesium carbonate", "chemical_name": "Magnesium carbonate", "formula": "MgCO₃"},
+      {"common_name": "Sodium sulphate", "chemical_name": "Sodium sulphate", "formula": "Na₂SO₄"},
+      {"common_name": "Calcium sulphate", "chemical_name": "Calcium sulphate", "formula": "CaSO₄"},
+      {"common_name": "Copper sulphate", "chemical_name": "Copper(II) sulphate", "formula": "CuSO₄"},
+      {"common_name": "Ferrous sulphate", "chemical_name": "Iron(II) sulphate", "formula": "FeSO₄"},
+      {"common_name": "Zinc sulphate", "chemical_name": "Zinc sulphate", "formula": "ZnSO₄"},
+      {"common_name": "Magnesium sulphate", "chemical_name": "Magnesium sulphate", "formula": "MgSO₄"},
+      {"common_name": "Sodium nitrate", "chemical_name": "Sodium nitrate", "formula": "NaNO₃"},
+      {"common_name": "Potassium nitrate", "chemical_name": "Potassium nitrate", "formula": "KNO₃"},
+      {"common_name": "Calcium nitrate", "chemical_name": "Calcium nitrate", "formula": "Ca(NO₃)₂"},
+      {"common_name": "Ammonium chloride", "chemical_name": "Ammonium chloride", "formula": "NH₄Cl"},
+      {"common_name": "Ammonium sulphate", "chemical_name": "Ammonium sulphate", "formula": "(NH₄)₂SO₄"},
+      {"common_name": "Ammonium nitrate", "chemical_name": "Ammonium nitrate", "formula": "NH₄NO₃"},
+      {"common_name": "Silver chloride", "chemical_name": "Silver chloride", "formula": "AgCl"},
+      {"common_name": "Silver nitrate", "chemical_name": "Silver nitrate", "formula": "AgNO₃"},
+      {"common_name": "Lead chloride", "chemical_name": "Lead(II) chloride", "formula": "PbCl₂"},
+      {"common_name": "Lead nitrate", "chemical_name": "Lead(II) nitrate", "formula": "Pb(NO₃)₂"},
+      {"common_name": "Barium chloride", "chemical_name": "Barium chloride", "formula": "BaCl₂"},
+      {"common_name": "Barium sulphate", "chemical_name": "Barium sulphate", "formula": "BaSO₄"},
+      {"common_name": "Potassium permanganate", "chemical_name": "Potassium permanganate", "formula": "KMnO₄"},
+      {"common_name": "Potassium dichromate", "chemical_name": "Potassium dichromate", "formula": "K₂Cr₂O₇"},
+      {"common_name": "Sodium acetate", "chemical_name": "Sodium ethanoate", "formula": "CH₃COONa"},
+      {"common_name": "Calcium phosphate", "chemical_name": "Calcium phosphate", "formula": "Ca₃(PO₄)₂"},
+      {"common_name": "Ammonium phosphate", "chemical_name": "Ammonium phosphate", "formula": "(NH₄)₃PO₄"}
+    ],
+    "hydrated_salts": [
+      {"common_name": "Washing soda", "chemical_name": "Sodium carbonate decahydrate", "formula": "Na₂CO₃·10H₂O"},
+      {"common_name": "Gypsum", "chemical_name": "Calcium sulphate dihydrate", "formula": "CaSO₄·2H₂O"},
+      {"common_name": "Plaster of Paris", "chemical_name": "Calcium sulphate hemihydrate", "formula": "CaSO₄·½H₂O"},
+      {"common_name": "Blue vitriol", "chemical_name": "Copper sulphate pentahydrate", "formula": "CuSO₄·5H₂O"},
+      {"common_name": "Green vitriol", "chemical_name": "Ferrous sulphate heptahydrate", "formula": "FeSO₄·7H₂O"},
+      {"common_name": "Epsom salt", "chemical_name": "Magnesium sulphate heptahydrate", "formula": "MgSO₄·7H₂O"},
+      {"common_name": "White vitriol", "chemical_name": "Zinc sulphate heptahydrate", "formula": "ZnSO₄·7H₂O"},
+      {"common_name": "Mohr's salt", "chemical_name": "Ammonium ferrous sulphate hexahydrate", "formula": "(NH₄)₂Fe(SO₄)₂·6H₂O"},
+      {"common_name": "Alum", "chemical_name": "Potassium aluminium sulphate dodecahydrate", "formula": "KAl(SO₄)₂·12H₂O"}
+    ],
+    "oxides": [
+      {"common_name": "Water", "chemical_name": "Dihydrogen monoxide", "formula": "H₂O"},
+      {"common_name": "Hydrogen peroxide", "chemical_name": "Hydrogen peroxide", "formula": "H₂O₂"},
+      {"common_name": "Carbon monoxide", "chemical_name": "Carbon monoxide", "formula": "CO"},
+      {"common_name": "Carbon dioxide", "chemical_name": "Carbon dioxide", "formula": "CO₂"},
+      {"common_name": "Sulphur dioxide", "chemical_name": "Sulphur dioxide", "formula": "SO₂"},
+      {"common_name": "Sulphur trioxide", "chemical_name": "Sulphur trioxide", "formula": "SO₃"},
+      {"common_name": "Nitric oxide", "chemical_name": "Nitrogen monoxide", "formula": "NO"},
+      {"common_name": "Nitrogen dioxide", "chemical_name": "Nitrogen dioxide", "formula": "NO₂"},
+      {"common_name": "Nitrous oxide", "chemical_name": "Dinitrogen monoxide", "formula": "N₂O"},
+      {"common_name": "Dinitrogen trioxide", "chemical_name": "Dinitrogen trioxide", "formula": "N₂O₃"},
+      {"common_name": "Dinitrogen pentoxide", "chemical_name": "Dinitrogen pentoxide", "formula": "N₂O₅"},
+      {"common_name": "Phosphorus pentoxide", "chemical_name": "Diphosphorus pentoxide", "formula": "P₂O₅"},
+      {"common_name": "Sodium oxide", "chemical_name": "Sodium oxide", "formula": "Na₂O"},
+      {"common_name": "Potassium oxide", "chemical_name": "Potassium oxide", "formula": "K₂O"},
+      {"common_name": "Calcium oxide", "chemical_name": "Calcium oxide", "formula": "CaO"},
+      {"common_name": "Magnesium oxide", "chemical_name": "Magnesium oxide", "formula": "MgO"},
+      {"common_name": "Aluminium oxide", "chemical_name": "Aluminium oxide", "formula": "Al₂O₃"},
+      {"common_name": "Zinc oxide", "chemical_name": "Zinc oxide", "formula": "ZnO"},
+      {"common_name": "Copper(II) oxide", "chemical_name": "Copper(II) oxide", "formula": "CuO"},
+      {"common_name": "Ferrous oxide", "chemical_name": "Iron(II) oxide", "formula": "FeO"},
+      {"common_name": "Ferric oxide", "chemical_name": "Iron(III) oxide", "formula": "Fe₂O₃"},
+      {"common_name": "Manganese dioxide", "chemical_name": "Manganese(IV) oxide", "formula": "MnO₂"},
+      {"common_name": "Lead(II) oxide", "chemical_name": "Lead monoxide", "formula": "PbO"},
+      {"common_name": "Lead(IV) oxide", "chemical_name": "Lead dioxide", "formula": "PbO₂"},
+      {"common_name": "Mercury(II) oxide", "chemical_name": "Mercuric oxide", "formula": "HgO"},
+      {"common_name": "Silicon dioxide", "chemical_name": "Silicon dioxide", "formula": "SiO₂"}
+    ],
+    "gases": [
+      {"common_name": "Hydrogen", "chemical_name": "Dihydrogen", "formula": "H₂"},
+      {"common_name": "Oxygen", "chemical_name": "Dioxygen", "formula": "O₂"},
+      {"common_name": "Nitrogen", "chemical_name": "Dinitrogen", "formula": "N₂"},
+      {"common_name": "Chlorine", "chemical_name": "Dichlorine", "formula": "Cl₂"},
+      {"common_name": "Fluorine", "chemical_name": "Difluorine", "formula": "F₂"},
+      {"common_name": "Ammonia", "chemical_name": "Ammonia", "formula": "NH₃"},
+      {"common_name": "Hydrogen sulphide", "chemical_name": "Hydrogen sulphide", "formula": "H₂S"},
+      {"common_name": "Hydrogen chloride", "chemical_name": "Hydrogen chloride", "formula": "HCl"},
+      {"common_name": "Sulphur dioxide", "chemical_name": "Sulphur dioxide", "formula": "SO₂"},
+      {"common_name": "Carbon dioxide", "chemical_name": "Carbon dioxide", "formula": "CO₂"},
+      {"common_name": "Carbon monoxide", "chemical_name": "Carbon monoxide", "formula": "CO"},
+      {"common_name": "Methane", "chemical_name": "Methane", "formula": "CH₄"},
+      {"common_name": "Ethyne", "chemical_name": "Acetylene", "formula": "C₂H₂"},
+      {"common_name": "Ethene", "chemical_name": "Ethylene", "formula": "C₂H₄"},
+      {"common_name": "Ozone", "chemical_name": "Trioxygen", "formula": "O₃"},
+      {"common_name": "Phosphine", "chemical_name": "Phosphine", "formula": "PH₃"},
+      {"common_name": "Nitrous oxide", "chemical_name": "Dinitrogen monoxide", "formula": "N₂O"}
+    ],
+    "organic_compounds": [
+      {"common_name": "Methane", "chemical_name": "Methane", "formula": "CH₄", "type": "Alkane"},
+      {"common_name": "Ethane", "chemical_name": "Ethane", "formula": "C₂H₆", "type": "Alkane"},
+      {"common_name": "Propane", "chemical_name": "Propane", "formula": "C₃H₈", "type": "Alkane"},
+      {"common_name": "Butane", "chemical_name": "Butane", "formula": "C₄H₁₀", "type": "Alkane"},
+      {"common_name": "Ethene", "chemical_name": "Ethene", "formula": "C₂H₄", "type": "Alkene"},
+      {"common_name": "Ethyne", "chemical_name": "Ethyne", "formula": "C₂H₂", "type": "Alkyne"},
+      {"common_name": "Methanol", "chemical_name": "Methanol", "formula": "CH₃OH", "type": "Alcohol"},
+      {"common_name": "Ethanol", "chemical_name": "Ethanol", "formula": "C₂H₅OH", "type": "Alcohol"},
+      {"common_name": "Formaldehyde", "chemical_name": "Methanal", "formula": "HCHO", "type": "Aldehyde"},
+      {"common_name": "Acetaldehyde", "chemical_name": "Ethanal", "formula": "CH₃CHO", "type": "Aldehyde"},
+      {"common_name": "Acetone", "chemical_name": "Propanone", "formula": "CH₃COCH₃", "type": "Ketone"},
+      {"common_name": "Formic acid", "chemical_name": "Methanoic acid", "formula": "HCOOH", "type": "Carboxylic acid"},
+      {"common_name": "Acetic acid", "chemical_name": "Ethanoic acid", "formula": "CH₃COOH", "type": "Carboxylic acid"},
+      {"common_name": "Benzene", "chemical_name": "Benzene", "formula": "C₆H₆", "type": "Aromatic"},
+      {"common_name": "Toluene", "chemical_name": "Methylbenzene", "formula": "C₆H₅CH₃", "type": "Aromatic"},
+      {"common_name": "Urea", "chemical_name": "Carbamide", "formula": "CO(NH₂)₂", "type": "Amide"},
+      {"common_name": "Glucose", "chemical_name": "Glucose", "formula": "C₆H₁₂O₆", "type": "Carbohydrate"},
+      {"common_name": "Sucrose", "chemical_name": "Sucrose", "formula": "C₁₂H₂₂O₁₁", "type": "Carbohydrate"},
+      {"common_name": "Citric acid", "chemical_name": "2-Hydroxypropane-1,2,3-tricarboxylic acid", "formula": "C₆H₈O₇", "type": "Organic acid"},
+      {"common_name": "Oxalic acid", "chemical_name": "Ethanedioic acid", "formula": "(COOH)₂", "type": "Organic acid"}
+    ],
+    "important_ions": {
+      "cations": [
+        {"name": "Hydrogen ion", "symbol": "H⁺"}, {"name": "Lithium ion", "symbol": "Li⁺"},
+        {"name": "Sodium ion", "symbol": "Na⁺"}, {"name": "Potassium ion", "symbol": "K⁺"},
+        {"name": "Ammonium ion", "symbol": "NH₄⁺"}, {"name": "Magnesium ion", "symbol": "Mg²⁺"},
+        {"name": "Calcium ion", "symbol": "Ca²⁺"}, {"name": "Barium ion", "symbol": "Ba²⁺"},
+        {"name": "Zinc ion", "symbol": "Zn²⁺"}, {"name": "Copper(II) ion", "symbol": "Cu²⁺"},
+        {"name": "Iron(II) ion", "symbol": "Fe²⁺"}, {"name": "Iron(III) ion", "symbol": "Fe³⁺"},
+        {"name": "Aluminium ion", "symbol": "Al³⁺"}, {"name": "Silver ion", "symbol": "Ag⁺"},
+        {"name": "Lead(II) ion", "symbol": "Pb²⁺"}, {"name": "Mercury(II) ion", "symbol": "Hg²⁺"}
+      ],
+      "anions": [
+        {"name": "Hydride ion", "symbol": "H⁻"}, {"name": "Oxide ion", "symbol": "O²⁻"},
+        {"name": "Hydroxide ion", "symbol": "OH⁻"}, {"name": "Fluoride ion", "symbol": "F⁻"},
+        {"name": "Chloride ion", "symbol": "Cl⁻"}, {"name": "Bromide ion", "symbol": "Br⁻"},
+        {"name": "Iodide ion", "symbol": "I⁻"}, {"name": "Sulphide ion", "symbol": "S²⁻"},
+        {"name": "Nitride ion", "symbol": "N³⁻"}, {"name": "Phosphide ion", "symbol": "P³⁻"},
+        {"name": "Nitrate ion", "symbol": "NO₃⁻"}, {"name": "Nitrite ion", "symbol": "NO₂⁻"},
+        {"name": "Sulphate ion", "symbol": "SO₄²⁻"}, {"name": "Sulphite ion", "symbol": "SO₃²⁻"},
+        {"name": "Carbonate ion", "symbol": "CO₃²⁻"}, {"name": "Bicarbonate ion", "symbol": "HCO₃⁻"},
+        {"name": "Phosphate ion", "symbol": "PO₄³⁻"}, {"name": "Phosphite ion", "symbol": "PO₃³⁻"},
+        {"name": "Acetate ion", "symbol": "CH₃COO⁻"}, {"name": "Permanganate ion", "symbol": "MnO₄⁻"},
+        {"name": "Dichromate ion", "symbol": "Cr₂O₇²⁻"}, {"name": "Chromate ion", "symbol": "CrO₄²⁻"},
+        {"name": "Oxalate ion", "symbol": "C₂O₄²⁻"}
+      ]
+    },
+    "common_household_substances": [
+      {"name": "Common salt", "chemical_name": "Sodium chloride", "formula": "NaCl"},
+      {"name": "Sugar", "chemical_name": "Sucrose", "formula": "C₁₂H₂₂O₁₁"},
+      {"name": "Baking soda", "chemical_name": "Sodium bicarbonate", "formula": "NaHCO₃"},
+      {"name": "Baking powder", "chemical_name": "Mixture of NaHCO₃ and tartaric acid", "formula": "NaHCO₃ + C₄H₆O₆"},
+      {"name": "Washing soda", "chemical_name": "Sodium carbonate decahydrate", "formula": "Na₂CO₃·10H₂O"},
+      {"name": "Bleaching powder", "chemical_name": "Calcium oxychloride", "formula": "CaOCl₂"},
+      {"name": "Vinegar", "chemical_name": "Acetic acid solution", "formula": "CH₃COOH (5-8%)"},
+      {"name": "Lime water", "chemical_name": "Calcium hydroxide solution", "formula": "Ca(OH)₂(aq)"},
+      {"name": "Lime", "chemical_name": "Calcium oxide", "formula": "CaO"},
+      {"name": "Chalk/Marble", "chemical_name": "Calcium carbonate", "formula": "CaCO₃"},
+      {"name": "Milk of Magnesia", "chemical_name": "Magnesium hydroxide suspension", "formula": "Mg(OH)₂"},
+      {"name": "Borax", "chemical_name": "Sodium tetraborate decahydrate", "formula": "Na₂B₄O₇·10H₂O"},
+      {"name": "Alcohol", "chemical_name": "Ethanol", "formula": "C₂H₅OH"},
+      {"name": "Detergent", "chemical_name": "(e.g.) Sodium lauryl sulphate", "formula": "CH₃(CH₂)₁₁OSO₃Na"},
+      {"name": "Soap", "chemical_name": "(e.g.) Sodium stearate", "formula": "C₁₇H₃₅COONa"}
+    ]
+  }
+};
+// ------------------------------------
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const navLinksContainer = document.getElementById('nav-links');
+    const contentContainer = document.getElementById('content');
+    const data = jsonData.chemical_formulas;
+
+    // --- Helper function to format titles ---
+    const formatTitle = (key) => {
+        return key.replace(/_/g, ' ').replace(/\b\w/g, char => char.toUpperCase());
+    };
+    
+    // --- Helper function to create a table ---
+    const createTable = (items) => {
+        if (!items || items.length === 0) return '';
+        
+        const table = document.createElement('table');
+        const thead = document.createElement('thead');
+        const tbody = document.createElement('tbody');
+        const headerRow = document.createElement('tr');
+        
+        // Create headers from the keys of the first item
+        const headers = Object.keys(items[0]);
+        headers.forEach(headerText => {
+            const th = document.createElement('th');
+            th.textContent = formatTitle(headerText);
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        
+        // Create table rows from the data
+        items.forEach(item => {
+            const row = document.createElement('tr');
+            headers.forEach(header => {
+                const td = document.createElement('td');
+                // Wrap formulas and symbols in <code> tags for styling
+                if (header.includes('formula') || header.includes('ionization') || header.includes('symbol')) {
+                    const code = document.createElement('code');
+                    code.innerHTML = item[header]; // Use innerHTML to render sup/sub tags correctly
+                    td.appendChild(code);
+                } else {
+                    td.textContent = item[header];
+                }
+                row.appendChild(td);
+            });
+            tbody.appendChild(row);
+        });
+        
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        return table;
+    };
+
+    // --- Iterate through the JSON to build the page ---
+    for (const key in data) {
+        // Create navigation link
+        const navLi = document.createElement('li');
+        const navA = document.createElement('a');
+        navA.href = `#${key}`;
+        navA.textContent = formatTitle(key);
+        navLi.appendChild(navA);
+        navLinksContainer.appendChild(navLi);
+
+        // Create content section
+        const section = document.createElement('section');
+        section.id = key;
+        const h2 = document.createElement('h2');
+        h2.textContent = formatTitle(key);
+        section.appendChild(h2);
+
+        // Handle the special nested structure for 'important_ions'
+        if (key === 'important_ions') {
+            for (const ionType in data[key]) {
+                const h3 = document.createElement('h3');
+                h3.textContent = formatTitle(ionType); // "Cations" or "Anions"
+                section.appendChild(h3);
+                const ionTable = createTable(data[key][ionType]);
+                section.appendChild(ionTable);
+            }
+        } else {
+            // Handle all other simple array structures
+            const table = createTable(data[key]);
+            section.appendChild(table);
+        }
+        
+        contentContainer.appendChild(section);
+    }
+});
+
+</script>
+
+</body>
+</html>

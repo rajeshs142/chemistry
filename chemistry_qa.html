@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBSE Class 10 Chemistry Q&A</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1e2a3a;
+            --text-color: #333;
+            --sidebar-text: #e0e6f1;
+            --sidebar-hover: #3a4b62;
+            --border-color: #d9e1e8;
+            --accent-color: #007bff;
+            --tag-bg: #e7f3ff;
+            --tag-text: #0056b3;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            display: flex;
+        }
+        #sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 25px;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+        #sidebar h1 {
+            font-size: 1.6rem;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        #sidebar .meta-info {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 25px;
+        }
+        #sidebar h2 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--sidebar-text);
+            border-top: 1px solid var(--sidebar-hover);
+            padding-top: 20px;
+        }
+        #sidebar ul { list-style-type: none; }
+        #sidebar .chapter-filter {
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            margin-bottom: 5px;
+        }
+        #sidebar .chapter-filter:hover, #sidebar .chapter-filter.active {
+            background-color: var(--sidebar-hover);
+            color: #fff;
+        }
+        #main-content {
+            margin-left: 280px;
+            padding: 30px 40px;
+            width: calc(100% - 280px);
+        }
+        #search-container {
+            margin-bottom: 30px;
+        }
+        #search-input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            transition: box-shadow 0.2s ease;
+        }
+        #search-input:focus {
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            border-color: var(--accent-color);
+        }
+        #question-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        .question-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.3s ease;
+        }
+        .question-card.hidden {
+            display: none;
+        }
+        .question-card:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.09);
+        }
+        .card-header {
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+        }
+        .card-header .chapter {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+        }
+        .card-header .core-question {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .card-body .answer {
+            list-style-position: inside;
+            padding-left: 5px;
+        }
+        .card-body .answer li {
+            margin-bottom: 8px;
+        }
+        .card-footer {
+            margin-top: auto; /* Pushes footer to the bottom */
+            padding-top: 20px;
+        }
+        .collapsible-header {
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            color: #555;
+        }
+        .collapsible-header::after {
+            content: ' ▼';
+            font-size: 0.8em;
+            display: inline-block;
+        }
+        .collapsible-content {
+            display: none;
+            padding-left: 15px;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+        .collapsible-content.show {
+            display: block;
+        }
+        .collapsible-content ul {
+            list-style-type: '– ';
+            list-style-position: inside;
+        }
+        .tags-container {
+            margin-top: 15px;
+        }
+        .tag {
+            display: inline-block;
+            background-color: var(--tag-bg);
+            color: var(--tag-text);
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin: 3px;
+        }
+
+        @media (max-width: 992px) {
+            body { flex-direction: column; }
+            #sidebar { position: static; width: 100%; height: auto; }
+            #main-content { margin-left: 0; width: 100%; padding: 20px; }
+            #question-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside id="sidebar">
+        <!-- Sidebar content will be generated by JavaScript -->
+    </aside>
+
+    <main id="main-content">
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Search questions, answers, or tags...">
+        </div>
+        <div id="question-container">
+            <!-- Question cards will be generated here by JavaScript -->
+        </div>
+    </main>
+
+<script>
+// --- PASTE YOUR JSON DATA HERE ---
+const jsonData =
+{
+  "class": "10",
+  "subject": "Chemistry",
+  "board": "CBSE",
+  "source": "NCERT only (Textbook, In-text, Exercises, PYQ-aligned)",
+  "answer_style": "Exam-safe expanded phrases, 3 points",
+  "questions": [
+    {
+      "chapter": "Chemical Reactions and Equations",
+      "type": "why",
+      "core_question": "Why should magnesium ribbon be cleaned before burning?",
+      "twisted_questions": [],
+      "answer": [
+        "Magnesium ribbon has a thin magnesium oxide coating on its surface",
+        "This oxide layer prevents proper contact with oxygen",
+        "Cleaning exposes fresh magnesium for complete combustion"
+      ],
+      "tags": ["day-to-day", "oxidation", "pyq", "3-mark"]
+    },
+    {
+      "chapter": "Chemical Reactions and Equations",
+      "type": "why",
+      "core_question": "Why is respiration considered an exothermic reaction?",
+      "twisted_questions": [],
+      "answer": [
+        "Glucose reacts with oxygen inside the body",
+        "Energy is released during the reaction",
+        "Released energy is used for life processes"
+      ],
+      "tags": ["biological process", "energy", "ncert", "3-mark"]
+    },
+    {
+      "chapter": "Chemical Reactions and Equations",
+      "type": "why",
+      "core_question": "Why is oxidation and reduction always taking place together?",
+      "twisted_questions": [],
+      "answer": [
+        "Oxidation involves loss of electrons by a substance",
+        "Reduction involves gain of electrons by another substance",
+        "Electrons lost by one are gained by the other"
+      ],
+      "tags": ["redox", "conceptual", "electrons", "3-mark"]
+    },
+    {
+      "chapter": "Chemical Reactions and Equations",
+      "type": "why",
+      "core_question": "Why are iron articles painted?",
+      "twisted_questions": [
+        "How does painting prevent rusting of iron articles?",
+        "Why does paint increase the life of iron objects?",
+        "How does a layer of paint protect iron from corrosion?"
+      ],
+      "answer": [
+        "Paint prevents contact of iron with air and moisture",
+        "This stops oxidation of iron",
+        "Rusting of iron is prevented"
+      ],
+      "tags": ["corrosion", "real-life", "pyq", "3-mark"]
+    },
+    {
+      "chapter": "Chemical Reactions and Equations",
+      "type": "why",
+      "core_question": "Why is corrosion considered a slow chemical reaction?",
+      "twisted_questions": [],
+      "answer": [
+        "Reaction occurs gradually over a long period",
+        "Iron reacts slowly with oxygen and moisture",
+        "Effects are not immediately visible"
+      ],
+      "tags": ["corrosion", "reaction rate", "conceptual", "3-mark"]
+    },
+    {
+      "chapter": "Acids, Bases and Salts",
+      "type": "why",
+      "core_question": "Why should acids be diluted by adding acid to water?",
+      "twisted_questions": [
+        "Why is it unsafe to add water directly to concentrated acid?",
+        "How does adding acid to water prevent accidents?",
+        "Why is dilution of acid considered a risky process?"
+      ],
+      "answer": [
+        "Dilution of acid produces large amount of heat",
+        "Adding water to acid may cause splashing",
+        "Acid added slowly to water allows safe absorption of heat"
+      ],
+      "tags": ["laboratory safety", "acids", "pyq", "3-mark"]
+    },
+    {
+      "chapter": "Acids, Bases and Salts",
+      "type": "why",
+      "core_question": "Why does dry hydrogen chloride gas not change dry litmus paper?",
+      "twisted_questions": [
+        "Why do acids show acidic behaviour only in aqueous solution?",
+        "How does presence of water affect acidic nature of HCl?",
+        "Why is moisture necessary for acids to change litmus colour?"
+      ],
+      "answer": [
+        "Acids show acidic nature only in aqueous solution",
+        "Dry HCl gas does not ionise to give H+ ions",
+        "Hence, no colour change occurs in dry litmus"
+      ],
+      "tags": ["acids", "indicators", "conceptual", "pyq", "3-mark"]
+    },
+    {
+      "chapter": "Acids, Bases and Salts",
+      "type": "why",
+      "core_question": "Why does tooth decay start when mouth pH falls below 5.5?",
+      "twisted_questions": [],
+      "answer": [
+        "Bacteria produce acids from food particles",
+        "Acids lower the pH of mouth",
+        "Low pH dissolves tooth enamel (calcium phosphate)"
+      ],
+      "tags": ["biological process", "ph", "real-life", "3-mark"]
+    },
+    {
+      "chapter": "Acids, Bases and Salts",
+      "type": "why",
+      "core_question": "Why is baking soda used in cooking?",
+      "twisted_questions": [],
+      "answer": [
+        "Baking soda releases carbon dioxide on heating",
+        "Carbon dioxide makes dough soft and fluffy",
+        "Food items rise during baking"
+      ],
+      "tags": ["real-life", "cooking", "decomposition", "3-mark"]
+    },
+    {
+      "chapter": "Acids, Bases and Salts",
+      "type": "why",
+      "core_question": "Why is plaster of Paris stored in moisture-proof containers?",
+      "twisted_questions": [
+        "How does moisture affect plaster of Paris?",
+        "Why does plaster of Paris lose usefulness on exposure to air?",
+        "Why should plaster of Paris not be exposed to moisture?"
+      ],
+      "answer": [
+        "Plaster of Paris reacts with moisture in air",
+        "It gets converted into gypsum",
+        "This reduces its setting property"
+      ],
+      "tags": ["construction", "real-life", "hydration", "pyq", "3-mark"]
+    },
+    {
+      "chapter": "Acids, Bases and Salts",
+      "type": "why",
+      "core_question": "Why is washing soda used for softening hard water?",
+      "twisted_questions": [],
+      "answer": [
+        "Hard water contains calcium and magnesium ions",
+        "Washing soda removes these ions as insoluble carbonates",
+        "Water becomes soft and suitable for use"
+      ],
+      "tags": ["cleaning agents", "hard water", "precipitation", "3-mark"]
+    },
+    {
+      "chapter": "Acids, Bases and Salts",
+      "type": "why",
+      "core_question": "Why are antacids used to treat acidity?",
+      "twisted_questions": [],
+      "answer": [
+        "Antacids are basic in nature",
+        "They neutralise excess acid in stomach",
+        "Provide relief from indigestion"
+      ],
+      "tags": ["neutralization", "real-life", "biological process", "3-mark"]
+    },
+    {
+      "chapter": "Metals and Non-metals",
+      "type": "why",
+      "core_question": "Why are metals generally used for making cooking utensils?",
+      "twisted_questions": [],
+      "answer": [
+        "Metals are good conductors of heat",
+        "Heat spreads evenly through the utensil",
+        "Metals have high melting points"
+      ],
+      "tags": ["properties of metals", "real-life", "application", "3-mark"]
+    },
+    {
+      "chapter": "Metals and Non-metals",
+      "type": "why",
+      "core_question": "Why is sodium kept immersed in kerosene?",
+      "twisted_questions": [],
+      "answer": [
+        "Sodium reacts vigorously with air and water",
+        "It may catch fire on exposure",
+        "Kerosene prevents contact with air and moisture"
+      ],
+      "tags": ["reactivity", "metals", "laboratory safety", "pyq", "3-mark"]
+    },
+    {
+      "chapter": "Metals and Non-metals",
+      "type": "why",
+      "core_question": "Why do aluminium articles not corrode easily?",
+      "twisted_questions": [
+        "How does aluminium resist corrosion?",
+        "Why is aluminium suitable for making utensils and window frames?",
+        "Why does aluminium not rust like iron?"
+      ],
+      "answer": [
+        "Aluminium forms a thin aluminium oxide layer",
+        "Oxide layer prevents further oxidation",
+        "Metal becomes resistant to corrosion"
+      ],
+      "tags": ["corrosion", "metals", "real-life", "3-mark"]
+    },
+    {
+      "chapter": "Metals and Non-metals",
+      "type": "why",
+      "core_question": "Why are copper and aluminium used for electrical wires?",
+      "twisted_questions": [],
+      "answer": [
+        "They are good conductors of electricity",
+        "They have low electrical resistance",
+        "Can be drawn into thin wires"
+      ],
+      "tags": ["properties of metals", "application", "conductivity", "3-mark"]
+    },
+    {
+      "chapter": "Metals and Non-metals",
+      "type": "why",
+      "core_question": "Why are ionic compounds hard and brittle?",
+      "twisted_questions": [],
+      "answer": [
+        "Strong electrostatic forces exist between ions",
+        "Ions are arranged in a rigid crystal lattice",
+        "On stress, layers shift and break"
+      ],
+      "tags": ["ionic compounds", "properties", "conceptual", "3-mark"]
+    },
+    {
+      "chapter": "Carbon and its Compounds",
+      "type": "why",
+      "core_question": "Why are carbon compounds poor conductors of electricity?",
+      "twisted_questions": [],
+      "answer": [
+        "Carbon compounds are covalent in nature",
+        "They do not form free ions",
+        "Absence of charged particles prevents conduction"
+      ],
+      "tags": ["covalent compounds", "properties", "conceptual", "3-mark"]
+    },
+    {
+      "chapter": "Carbon and its Compounds",
+      "type": "why",
+      "core_question": "Why are soaps ineffective in hard water?",
+      "twisted_questions": [
+        "How does hard water affect the cleansing action of soap?",
+        "Why is more soap required in hard water?",
+        "Why do soaps form scum in hard water?"
+      ],
+      "answer": [
+        "Hard water contains calcium and magnesium ions",
+        "Soap reacts to form insoluble scum",
+        "Lather formation is reduced"
+      ],
+      "tags": ["cleaning agents", "real-life", "pyq", "3-mark"]
+    },
+    {
+      "chapter": "Carbon and its Compounds",
+      "type": "why",
+      "core_question": "Why are detergents better cleansing agents than soaps?",
+      "twisted_questions": [
+        "How do detergents work better than soaps in hard water?",
+        "Why are detergents preferred for washing clothes?",
+        "Why do detergents show cleansing action in all types of water?"
+      ],
+      "answer": [
+        "Detergents do not form scum with hard water",
+        "They work in acidic and basic water",
+        "Cleaning action remains effective"
+      ],
+      "tags": ["cleaning agents", "application", "pyq", "3-mark"]
+    },
+    {
+      "chapter": "Carbon and its Compounds",
+      "type": "why",
+      "core_question": "Why is ethanol considered a good fuel?",
+      "twisted_questions": [],
+      "answer": [
+        "Ethanol burns with a clean flame",
+        "Produces less smoke and pollution",
+        "Has high calorific value"
+      ],
+      "tags": ["fuels", "combustion", "application", "3-mark"]
+    },
+    {
+      "chapter": "Our Environment",
+      "type": "why",
+      "core_question": "Why are food chains short?",
+      "twisted_questions": [],
+      "answer": [
+        "Energy transfer decreases at each trophic level",
+        "Only 10% energy is passed to next level",
+        "Longer chains result in energy loss"
+      ],
+      "tags": ["ecosystem", "energy flow", "10 percent law", "3-mark"]
+    },
+    {
+      "chapter": "Our Environment",
+      "type": "why",
+      "core_question": "Why are biodegradable wastes preferred over non-biodegradable wastes?",
+      "twisted_questions": [],
+      "answer": [
+        "Biodegradable wastes decompose naturally",
+        "They do not accumulate in environment",
+        "Cause less long-term pollution"
+      ],
+      "tags": ["environment", "waste management", "pollution", "3-mark"]
+    },
+    {
+      "chapter": "Our Environment",
+      "type": "why",
+      "core_question": "Why is ozone layer important for living organisms?",
+      "twisted_questions": [
+        "How does ozone layer protect life on Earth?",
+        "Why is depletion of ozone layer harmful?",
+        "What would happen if ozone layer disappears?"
+      ],
+      "answer": [
+        "Absorbs harmful ultraviolet radiation from the Sun",
+        "Prevents skin cancer and eye damage",
+        "Protects plants, animals and humans"
+      ],
+      "tags": ["environment", "pyq", "life-processes", "3-mark"]
+    }
+  ]
+};
+// ------------------------------------
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('sidebar');
+    const questionContainer = document.getElementById('question-container');
+    const searchInput = document.getElementById('search-input');
+    
+    // --- Populate Sidebar ---
+    sidebar.innerHTML = `
+        <h1>${jsonData.subject} Q&A</h1>
+        <div class="meta-info">Class: ${jsonData.class} | Board: ${jsonData.board}</div>
+        <h2>Chapters</h2>
+        <ul id="chapter-list"></ul>
+    `;
+    const chapterList = document.getElementById('chapter-list');
+    
+    const chapters = ['All Chapters', ...new Set(jsonData.questions.map(q => q.chapter))];
+    chapters.forEach(chapter => {
+        const li = document.createElement('li');
+        li.className = 'chapter-filter';
+        li.textContent = chapter;
+        if (chapter === 'All Chapters') {
+            li.classList.add('active');
+        }
+        li.dataset.chapter = chapter;
+        chapterList.appendChild(li);
+    });
+
+    // --- Populate Question Cards ---
+    jsonData.questions.forEach((q, index) => {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.dataset.chapter = q.chapter;
+        card.dataset.index = index;
+        
+        // Build card's inner HTML
+        card.innerHTML = `
+            <div class="card-header">
+                <div class="chapter">${q.chapter}</div>
+                <div class="core-question">${q.core_question}</div>
+                               <div class="collapsible-header" data-target="twisted-${index}">Similar questions</div>
+                <div id="twisted-${index}" class="collapsible-content show">
+                    <ul>${q.twisted_questions.map(tq => `<li>${tq}</li>`).join('')}</ul>
+                </div>
+            </div>
+            <div class="card-body">
+                <ul class="answer">
+                    ${q.answer.map(point => `<li>${point}</li>`).join('')}
+                </ul>
+            </div>
+            <div class="card-footer">
+ 
+                <div class="tags-container collapsible-header" data-target="tags-${index}" style="display: none;">Tags</div>
+                <div id="tags-${index}" class="collapsible-content">
+                    ${q.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
+                </div>
+            </div>
+        `;
+        questionContainer.appendChild(card);
+    });
+
+    // --- Add Event Listeners ---
+    
+    // Collapsible sections
+    document.querySelectorAll('.collapsible-header').forEach(header => {
+        header.addEventListener('click', () => {
+            const content = document.getElementById(header.dataset.target);
+            content.classList.toggle('show');
+            header.classList.toggle('active');
+        });
+    });
+
+    // Filter and Search logic
+    const allCards = document.querySelectorAll('.question-card');
+    const chapterFilters = document.querySelectorAll('.chapter-filter');
+    let currentChapter = 'All Chapters';
+    let currentSearchTerm = '';
+
+    const applyFilters = () => {
+        allCards.forEach(card => {
+            const chapterMatch = currentChapter === 'All Chapters' || card.dataset.chapter === currentChapter;
+            const questionData = jsonData.questions[card.dataset.index];
+            
+            const searchMatch = !currentSearchTerm || 
+                questionData.core_question.toLowerCase().includes(currentSearchTerm) ||
+                questionData.answer.some(a => a.toLowerCase().includes(currentSearchTerm)) ||
+                questionData.tags.some(t => t.toLowerCase().includes(currentSearchTerm));
+
+            if (chapterMatch && searchMatch) {
+                card.classList.remove('hidden');
+            } else {
+                card.classList.add('hidden');
+            }
+        });
+    };
+
+    // Chapter filter clicks
+    chapterFilters.forEach(filter => {
+        filter.addEventListener('click', () => {
+            chapterFilters.forEach(f => f.classList.remove('active'));
+            filter.classList.add('active');
+            currentChapter = filter.dataset.chapter;
+            applyFilters();
+        });
+    });
+
+    // Search input
+    searchInput.addEventListener('input', () => {
+        currentSearchTerm = searchInput.value.toLowerCase();
+        applyFilters();
+    });
+});
+
+</script>
+
+</body>
+</html>

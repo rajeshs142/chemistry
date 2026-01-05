@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chemical Reactions</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --main-bg: #ffffff;
+            --sidebar-bg: #1e2a3a;
+            --text-color: #333;
+            --sidebar-text: #e0e6f1;
+            --sidebar-hover: #3a4b62;
+            --border-color: #dee2e6;
+            --accent-color: #007bff;
+            --code-bg: #f8f9fa;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+        
+        #sidebar {
+            width: 320px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 25px;
+            height: 100%;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+        #sidebar h1 { 
+            font-size: 1.6rem; 
+            margin-bottom: 25px; 
+            color: #fff;
+            border-bottom: 1px solid var(--sidebar-hover);
+            padding-bottom: 15px;
+        }
+        #sidebar ul { list-style-type: none; }
+        #sidebar .nav-item {
+            cursor: pointer;
+            padding: 12px 18px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            margin-bottom: 5px;
+            font-size: 1.05rem;
+        }
+        #sidebar .nav-item:hover, #sidebar .nav-item.active {
+            background-color: var(--sidebar-hover);
+            color: #fff;
+        }
+
+        #main-content {
+            flex: 1;
+            padding: 40px;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .content-card {
+            background-color: var(--main-bg);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
+        }
+        .content-card h2 {
+            font-size: 2rem;
+            color: var(--header-bg);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .content-card h3 {
+            font-size: 1.4rem;
+            color: #333;
+            margin-top: 25px;
+            margin-bottom: 15px;
+        }
+        .definition, .description {
+            font-size: 1.1rem;
+            font-style: italic;
+            background-color: #eef2f5;
+            padding: 15px;
+            border-left: 5px solid var(--accent-color);
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        .info-block {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+        .info-block strong {
+            display: inline-block;
+            min-width: 150px;
+        }
+        .info-block code {
+            font-family: monospace;
+            background-color: var(--code-bg);
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            text-align: left;
+            vertical-align: middle;
+        }
+        thead {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: var(--bg-color);
+        }
+        ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 992px) {
+            body { 
+                flex-direction: column; 
+                height: auto;
+                overflow: auto;
+            }
+            #sidebar { 
+                position: static; 
+                width: 100%; 
+                height: auto;
+                max-height: 40vh;
+            }
+            #main-content { 
+                height: auto;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <aside id="sidebar">
+        <h1>Reaction Types</h1>
+        <ul id="nav-list">
+            <!-- Navigation items will be generated here by JavaScript -->
+        </ul>
+    </aside>
+
+    <main id="main-content">
+        <!-- Main content will be generated here by JavaScript -->
+    </main>
+
+<script>
+// --- PASTE YOUR JSON ARRAY DATA HERE ---
+const reactionsJson =[
+  {
+    "reaction_type": "Combination",
+    "general_form": "A + B → AB",
+    "description": "Two or more substances combine to form a single product",
+    "examples": [
+      {
+        "name": "Burning of Magnesium",
+        "equation": "2Mg(s) + O₂(g) → 2MgO(s)",
+        "observation": "Dazzling white flame, white ash formed",
+        "notes": "Highly exothermic reaction"
+      },
+      {
+        "name": "Formation of Water",
+        "equation": "2H₂(g) + O₂(g) → 2H₂O(l)",
+        "observation": "Explosive reaction, water formed",
+        "notes": "Highly exothermic"
+      },
+      {
+        "name": "Formation of Ammonia (Haber Process)",
+        "equation": "N₂(g) + 3H₂(g) → 2NH₃(g)",
+        "observation": "Gas to gas combination",
+        "notes": "Industrial process"
+      },
+      {
+        "name": "Burning of Carbon",
+        "equation": "C(s) + O₂(g) → CO₂(g)",
+        "observation": "Burns with blue flame, CO₂ produced",
+        "notes": "Complete combustion"
+      },
+      {
+        "name": "Quicklime with Water",
+        "equation": "CaO(s) + H₂O(l) → Ca(OH)₂(aq) + Heat",
+        "observation": "Slaking of lime, exothermic",
+        "notes": "Used in mortar preparation"
+      },
+      {
+        "name": "Formation of Calcium Carbonate",
+        "equation": "CaO(s) + CO₂(g) → CaCO₃(s)",
+        "observation": "White precipitate formed",
+        "notes": "Used in construction"
+      }
+    ],
+    "characteristics": [
+      "Usually exothermic",
+      "Produces single product",
+      "May involve elements or compounds",
+      "Often release energy"
+    ]
+  },
+  {
+    "reaction_type": "Decomposition",
+    "general_form": "AB → A + B",
+    "description": "A single compound breaks down into two or more simpler substances",
+    "categories": [
+      {
+        "name": "Thermal Decomposition",
+        "description": "Decomposition by heat",
+        "examples": [
+          {
+            "name": "Heating of Lead Nitrate",
+            "equation": "2Pb(NO₃)₂(s) → 2PbO(s) + 4NO₂(g) + O₂(g)",
+            "observation": "Brown fumes of NO₂, crackling sound",
+            "notes": "Produces nitrogen dioxide gas"
+          },
+          {
+            "name": "Heating of Ferrous Sulphate",
+            "equation": "2FeSO₄(s) → Fe₂O₃(s) + SO₂(g) + SO₃(g)",
+            "observation": "Green to brown color change, smell of burning sulphur",
+            "notes": "Color change indicates decomposition"
+          },
+          {
+            "name": "Heating of Calcium Carbonate",
+            "equation": "CaCO₃(s) → CaO(s) + CO₂(g)",
+            "observation": "Lime water turns milky due to CO₂",
+            "notes": "Used in lime production"
+          },
+          {
+            "name": "Heating of Potassium Chlorate",
+            "equation": "2KClO₃(s) → 2KCl(s) + 3O₂(g)",
+            "observation": "Oxygen gas evolved",
+            "notes": "Laboratory preparation of oxygen"
+          }
+        ]
+      },
+      {
+        "name": "Electrolytic Decomposition",
+        "description": "Decomposition by electricity",
+        "examples": [
+          {
+            "name": "Electrolysis of Water",
+            "equation": "2H₂O(l) → 2H₂(g) + O₂(g)",
+            "observation": "H₂:O₂ = 2:1 by volume, pop test for H₂",
+            "notes": "Demonstrates composition of water"
+          },
+          {
+            "name": "Electrolysis of Molten Sodium Chloride",
+            "equation": "2NaCl(l) → 2Na(s) + Cl₂(g)",
+            "observation": "Sodium metal at cathode, chlorine gas at anode",
+            "notes": "Commercial production of sodium"
+          }
+        ]
+      },
+      {
+        "name": "Photolytic Decomposition",
+        "description": "Decomposition by light",
+        "examples": [
+          {
+            "name": "Decomposition of Silver Chloride",
+            "equation": "2AgCl(s) → 2Ag(s) + Cl₂(g)",
+            "observation": "White to grey color change in sunlight",
+            "notes": "Photosensitive reaction"
+          },
+          {
+            "name": "Decomposition of Silver Bromide",
+            "equation": "2AgBr(s) → 2Ag(s) + Br₂(g)",
+            "observation": "Used in black and white photography",
+            "notes": "Basis of photographic film"
+          }
+        ]
+      }
+    ],
+    "characteristics": [
+      "Usually endothermic (requires energy input)",
+      "Single reactant breaks down",
+      "Products can be elements or simpler compounds",
+      "Requires energy in form of heat, light, or electricity"
+    ]
+  },
+  {
+    "reaction_type": "Displacement",
+    "general_form": "A + BC → AC + B",
+    "description": "More reactive element displaces less reactive element from its compound",
+    "reactivity_series": "K > Na > Ca > Mg > Al > Zn > Fe > Pb > [H] > Cu > Hg > Ag > Au",
+    "examples": [
+      {
+        "name": "Iron with Copper Sulphate",
+        "equation": "Fe(s) + CuSO₄(aq) → FeSO₄(aq) + Cu(s)",
+        "observation": "Blue color fades, brown deposit on iron",
+        "explanation": "Fe more reactive than Cu",
+        "notes": "Simple displacement reaction"
+      },
+      {
+        "name": "Zinc with Copper Sulphate",
+        "equation": "Zn(s) + CuSO₄(aq) → ZnSO₄(aq) + Cu(s)",
+        "observation": "Blue solution becomes colorless, red-brown copper deposited",
+        "explanation": "Zn more reactive than Cu",
+        "notes": "Common laboratory demonstration"
+      },
+      {
+        "name": "Zinc with Sulphuric Acid",
+        "equation": "Zn(s) + H₂SO₄(aq) → ZnSO₄(aq) + H₂(g)",
+        "observation": "Effervescence, gas burns with pop sound",
+        "explanation": "Zn more reactive than H",
+        "notes": "Laboratory preparation of hydrogen"
+      },
+      {
+        "name": "Magnesium with Hydrochloric Acid",
+        "equation": "Mg(s) + 2HCl(aq) → MgCl₂(aq) + H₂(g)",
+        "observation": "Vigorous effervescence, heat produced",
+        "explanation": "Mg very reactive, displaces H",
+        "notes": "Very fast reaction"
+      },
+      {
+        "name": "Copper with Silver Nitrate",
+        "equation": "Cu(s) + 2AgNO₃(aq) → Cu(NO₃)₂(aq) + 2Ag(s)",
+        "observation": "Colorless solution turns blue, shiny silver deposit",
+        "explanation": "Cu more reactive than Ag",
+        "notes": "Forms beautiful silver crystals"
+      },
+      {
+        "name": "Aluminium with Iron Oxide (Thermite)",
+        "equation": "2Al(s) + Fe₂O₃(s) → 2Fe(l) + Al₂O₃(s) + Heat",
+        "observation": "Highly exothermic, molten iron produced",
+        "explanation": "Al more reactive than Fe",
+        "notes": "Used in welding railway tracks"
+      }
+    ]
+  },
+  {
+    "reaction_type": "Double Displacement",
+    "general_form": "AB + CD → AD + CB",
+    "description": "Exchange of ions between two compounds",
+    "subtypes": [
+      {
+        "name": "Precipitation",
+        "description": "Forms insoluble precipitate",
+        "examples": [
+          {
+            "name": "Silver Nitrate with Sodium Chloride",
+            "equation": "AgNO₃(aq) + NaCl(aq) → AgCl(s)↓ + NaNO₃(aq)",
+            "observation": "White curdy precipitate of AgCl",
+            "notes": "Test for chloride ions"
+          },
+          {
+            "name": "Barium Chloride with Sodium Sulphate",
+            "equation": "BaCl₂(aq) + Na₂SO₄(aq) → BaSO₄(s)↓ + 2NaCl(aq)",
+            "observation": "White precipitate of BaSO₄",
+            "notes": "Test for sulphate ions"
+          },
+          {
+            "name": "Lead Nitrate with Potassium Iodide",
+            "equation": "Pb(NO₃)₂(aq) + 2KI(aq) → PbI₂(s)↓ + 2KNO₃(aq)",
+            "observation": "Yellow precipitate of PbI₂",
+            "notes": "Formation of golden yellow precipitate"
+          }
+        ]
+      },
+      {
+        "name": "Neutralization",
+        "description": "Acid + Base → Salt + Water",
+        "examples": [
+          {
+            "name": "Hydrochloric Acid with Sodium Hydroxide",
+            "equation": "HCl(aq) + NaOH(aq) → NaCl(aq) + H₂O(l)",
+            "observation": "Heat evolved, salt solution remains",
+            "notes": "Exothermic reaction"
+          },
+          {
+            "name": "Sulphuric Acid with Calcium Hydroxide",
+            "equation": "H₂SO₄(aq) + Ca(OH)₂(aq) → CaSO₄(aq) + 2H₂O(l)",
+            "observation": "Neutralization, salt formed",
+            "notes": "Forms gypsum"
+          },
+          {
+            "name": "Acetic Acid with Sodium Hydroxide",
+            "equation": "CH₃COOH(aq) + NaOH(aq) → CH₃COONa(aq) + H₂O(l)",
+            "observation": "Weak acid neutralization",
+            "notes": "Forms sodium acetate"
+          }
+        ]
+      },
+      {
+        "name": "Gas Evolution",
+        "description": "Forms gas as one product",
+        "examples": [
+          {
+            "name": "Sodium Carbonate with Hydrochloric Acid",
+            "equation": "Na₂CO₃(s) + 2HCl(aq) → 2NaCl(aq) + H₂O(l) + CO₂(g)",
+            "observation": "Effervescence, lime water turns milky",
+            "notes": "Test for carbonate ions"
+          },
+          {
+            "name": "Sodium Sulphite with Sulphuric Acid",
+            "equation": "Na₂SO₃(aq) + H₂SO₄(aq) → Na₂SO₄(aq) + H₂O(l) + SO₂(g)",
+            "observation": "Pungent smelling SO₂ gas",
+            "notes": "Test for sulphite ions"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "reaction_type": "Redox",
+    "general_form": "Oxidation and Reduction occur simultaneously",
+    "description": "Reactions involving transfer of electrons",
+    "definitions": {
+      "oxidation": "Gain of oxygen, loss of hydrogen, or loss of electrons",
+      "reduction": "Loss of oxygen, gain of hydrogen, or gain of electrons"
+    },
+    "mnemonic": "OIL RIG - Oxidation Is Loss, Reduction Is Gain (of electrons)",
+    "examples": [
+      {
+        "name": "Copper Oxide with Hydrogen",
+        "equation": "CuO(s) + H₂(g) → Cu(s) + H₂O(g)",
+        "analysis": {
+          "oxidized": "H₂ → H₂O (gains oxygen)",
+          "reduced": "CuO → Cu (loses oxygen)",
+          "oxidizing_agent": "CuO",
+          "reducing_agent": "H₂"
+        },
+        "notes": "Hydrogen acts as reducing agent"
+      },
+      {
+        "name": "Zinc with Copper Sulphate",
+        "equation": "Zn(s) + CuSO₄(aq) → ZnSO₄(aq) + Cu(s)",
+        "analysis": {
+          "oxidized": "Zn → Zn²⁺ (loses 2 electrons)",
+          "reduced": "Cu²⁺ → Cu (gains 2 electrons)",
+          "oxidizing_agent": "CuSO₄",
+          "reducing_agent": "Zn"
+        },
+        "notes": "Displacement reaction that is also redox"
+      },
+      {
+        "name": "Combustion of Methane",
+        "equation": "CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(g) + Heat",
+        "analysis": {
+          "oxidized": "CH₄ (gains oxygen, loses hydrogen)",
+          "reduced": "O₂ (becomes part of CO₂ and H₂O)",
+          "oxidizing_agent": "O₂",
+          "reducing_agent": "CH₄"
+        },
+        "notes": "Complete combustion reaction"
+      },
+      {
+        "name": "Corrosion of Iron (Rusting)",
+        "equation": "4Fe(s) + 3O₂(g) + xH₂O → 2Fe₂O₃.xH₂O(s)",
+        "analysis": {
+          "oxidized": "Fe → Fe³⁺ (loses electrons)",
+          "reduced": "O₂ (gains electrons)",
+          "real_life_example": "Rust formation"
+        },
+        "notes": "Slow redox reaction in presence of moisture"
+      }
+    ]
+  },
+  {
+    "reaction_type": "Exothermic",
+    "definition": "Reactions that release heat energy",
+    "sign": "ΔH = Negative",
+    "description": "Energy is released to the surroundings",
+    "examples": [
+      {
+        "name": "Respiration",
+        "equation": "C₆H₁₂O₆ + 6O₂ → 6CO₂ + 6H₂O + Energy",
+        "observation": "Energy released for life processes",
+        "notes": "Biological process"
+      },
+      {
+        "name": "Burning of Fuels",
+        "equation": "CH₄ + 2O₂ → CO₂ + 2H₂O + Heat",
+        "observation": "Produces heat and light",
+        "notes": "Combustion reaction"
+      },
+      {
+        "name": "Neutralization",
+        "equation": "HCl + NaOH → NaCl + H₂O + Heat",
+        "observation": "Temperature increases",
+        "notes": "Acid-base reaction"
+      },
+      {
+        "name": "Slaking of Lime",
+        "equation": "CaO + H₂O → Ca(OH)₂ + Heat",
+        "observation": "Heat produced, can boil water",
+        "notes": "Used in construction"
+      },
+      {
+        "name": "Decomposition of Vegetable Matter",
+        "observation": "Produces heat (composting)",
+        "notes": "Natural decomposition process"
+      }
+    ]
+  },
+  {
+    "reaction_type": "Endothermic",
+    "definition": "Reactions that absorb heat energy",
+    "sign": "ΔH = Positive",
+    "description": "Energy is absorbed from the surroundings",
+    "examples": [
+      {
+        "name": "Photosynthesis",
+        "equation": "6CO₂ + 6H₂O + Sunlight → C₆H₁₂O₆ + 6O₂",
+        "observation": "Absorbs solar energy",
+        "notes": "Biological process in plants"
+      },
+      {
+        "name": "Thermal Decomposition",
+        "equation": "CaCO₃ + Heat → CaO + CO₂",
+        "observation": "Requires continuous heating",
+        "notes": "Decomposition reaction"
+      },
+      {
+        "name": "Electrolysis of Water",
+        "equation": "2H₂O + Electrical Energy → 2H₂ + O₂",
+        "observation": "Requires continuous electricity",
+        "notes": "Decomposition by electricity"
+      },
+      {
+        "name": "Cooking of Food",
+        "observation": "Requires heat input",
+        "notes": "Everyday example"
+      },
+      {
+        "name": "Evaporation of Water",
+        "observation": "Absorbs heat from surroundings",
+        "notes": "Physical change"
+      }
+    ]
+  },
+  {
+    "reaction_type": "Combustion",
+    "general_form": "Fuel + O₂ → CO₂ + H₂O + Heat + Light",
+    "description": "Rapid oxidation of fuel with oxygen releasing heat and light",
+    "examples": [
+      {
+        "name": "Combustion of Methane",
+        "equation": "CH₄(g) + 2O₂(g) → CO₂(g) + 2H₂O(g) + Heat",
+        "notes": "Main component of natural gas"
+      },
+      {
+        "name": "Combustion of Ethanol",
+        "equation": "C₂H₅OH(l) + 3O₂(g) → 2CO₂(g) + 3H₂O(g) + Heat",
+        "notes": "Biofuel combustion"
+      }
+    ],
+    "characteristics": [
+      "Always exothermic",
+      "Produces heat and light",
+      "Requires oxygen",
+      "Usually produces CO₂ and H₂O"
+    ]
+  },
+  {
+    "reaction_type": "Oxidation (Organic)",
+    "description": "Conversion of alcohols to carboxylic acids",
+    "examples": [
+      {
+        "name": "Ethanol to Ethanoic Acid",
+        "equation": "CH₃CH₂OH + 2[O] → CH₃COOH + H₂O",
+        "oxidizing_agent": "Alkaline KMnO₄ or K₂Cr₂O₇",
+        "notes": "Controlled oxidation"
+      }
+    ]
+  },
+  {
+    "reaction_type": "Addition",
+    "general_form": "A + B → AB",
+    "description": "Characteristic of unsaturated hydrocarbons (alkenes, alkynes)",
+    "examples": [
+      {
+        "name": "Hydrogenation of Ethene",
+        "equation": "CH₂=CH₂ + H₂ → CH₃-CH₃",
+        "conditions": "Ni catalyst, 200-300°C",
+        "notes": "Used in margarine production"
+      },
+      {
+        "name": "Bromine Water Test",
+        "equation": "CH₂=CH₂ + Br₂ → CH₂Br-CH₂Br",
+        "observation": "Red-brown bromine decolorizes",
+        "notes": "Test for unsaturation"
+      }
+    ]
+  },
+  {
+    "reaction_type": "Substitution",
+    "general_form": "AB + C → AC + B",
+    "description": "Characteristic of saturated hydrocarbons (alkanes)",
+    "examples": [
+      {
+        "name": "Chlorination of Methane",
+        "equation": "CH₄ + Cl₂ → CH₃Cl + HCl",
+        "conditions": "Sunlight",
+        "notes": "Free radical substitution"
+      }
+    ]
+  },
+  {
+    "reaction_type": "Esterification",
+    "general_form": "Acid + Alcohol → Ester + Water",
+    "description": "Formation of esters from carboxylic acids and alcohols",
+    "examples": [
+      {
+        "name": "Acetic Acid + Ethanol",
+        "equation": "CH₃COOH + C₂H₅OH → CH₃COOC₂H₅ + H₂O",
+        "catalyst": "Conc. H₂SO₄",
+        "observation": "Fruity smell produced",
+        "product": "Ethyl acetate"
+      }
+    ]
+  },
+  {
+    "reaction_type": "Saponification",
+    "general_form": "Ester + Base → Soap + Glycerol",
+    "description": "Alkaline hydrolysis of esters to form soap",
+    "examples": [
+      {
+        "name": "Oil/Fat with Sodium Hydroxide",
+        "equation": "(C₁₇H₃₅COO)₃C₃H₅ + 3NaOH → 3C₁₇H₃₅COONa + C₃H₅(OH)₃",
+        "products": {
+          "soap": "Sodium stearate",
+          "byproduct": "Glycerol"
+        },
+        "notes": "Soap-making process"
+      }
+    ]
+  },
+  {
+    "reaction_type": "Summary",
+    "title": "Summary of Reaction Types",
+    "is_summary": true,
+    "table": {
+      "headers": ["Type", "General Form", "Key Feature", "Example"],
+      "rows": [
+        ["Combination", "A + B → AB", "Single product formed", "2Mg + O₂ → 2MgO"],
+        ["Decomposition", "AB → A + B", "Single reactant breaks down", "CaCO₃ → CaO + CO₂"],
+        ["Displacement", "A + BC → AC + B", "More reactive replaces less", "Fe + CuSO₄ → FeSO₄ + Cu"],
+        ["Double Displacement", "AB + CD → AD + CB", "Ion exchange", "AgNO₃ + NaCl → AgCl↓ + NaNO₃"],
+        ["Redox", "Simultaneous oxidation & reduction", "Electron transfer", "Zn + CuSO₄ → ZnSO₄ + Cu"],
+        ["Exothermic", "Releases heat", "ΔH = Negative", "CH₄ + 2O₂ → CO₂ + 2H₂O + Heat"],
+        ["Endothermic", "Absorbs heat", "ΔH = Positive", "CaCO₃ + Heat → CaO + CO₂"],
+        ["Combustion", "Fuel + O₂ → Products + Heat", "Produces heat and light", "C + O₂ → CO₂ + Heat"]
+      ]
+    }
+  }
+];
+// ------------------------------------
+
+document.addEventListener('DOMContentLoaded', () => {
+    const navList = document.getElementById('nav-list');
+    const mainContent = document.getElementById('main-content');
+
+    const createKey = (title) => title.toLowerCase().replace(/\s+/g, '-').replace(/[()]/g, '');
+
+    // --- Populate Navigation Sidebar ---
+    const summaryData = reactionsJson.find(item => item.is_summary);
+    if (summaryData) {
+        const summaryLi = document.createElement('li');
+        summaryLi.className = 'nav-item active';
+        summaryLi.textContent = summaryData.title;
+        summaryLi.dataset.key = createKey(summaryData.title);
+        navList.appendChild(summaryLi);
+    }
+
+    reactionsJson.forEach(reaction => {
+        if (!reaction.is_summary) {
+            const li = document.createElement('li');
+            li.className = 'nav-item';
+            li.textContent = reaction.reaction_type;
+            li.dataset.key = createKey(reaction.reaction_type);
+            navList.appendChild(li);
+        }
+    });
+
+    // --- Function to Render Content ---
+    const renderContent = (key) => {
+        mainContent.innerHTML = '';
+        
+        // const data = reactionsJson.find(item => createKey(item.reaction_type || item.title) === key);
+                const data = reactionsJson.find(item => {
+            // This is the corrected part. It now specifically checks for the summary object.
+            if (item.is_summary) {
+                return createKey(item.title) === key;
+            }
+            return createKey(item.reaction_type) === key;
+        }); 
+        if (!data) return;
+
+        const card = document.createElement('div');
+        card.className = 'content-card';
+        
+        // Handle Summary Table
+        if (data.is_summary) {
+            const summary = data.table;
+            let contentHTML = `<h2>${data.title}</h2><table><thead><tr>`;
+            summary.headers.forEach(header => contentHTML += `<th>${header}</th>`);
+            contentHTML += '</tr></thead><tbody>';
+            summary.rows.forEach(row => {
+                contentHTML += '<tr>';
+                row.forEach((cell, index) => {
+                    contentHTML += `<td>${index === row.length - 1 ? `<code>${cell}</code>` : cell}</td>`;
+                });
+                contentHTML += '</tr>';
+            });
+            contentHTML += '</tbody></table>';
+            card.innerHTML = contentHTML;
+        } 
+        // Handle normal reaction types
+        else {
+            let contentHTML = `<h2>${data.reaction_type}</h2>`;
+            if (data.description) contentHTML += `<p class="description">${data.description}</p>`;
+            if (data.general_form) contentHTML += `<div class="info-block"><strong>General Form:</strong> <code>${data.general_form}</code></div>`;
+            if (data.reactivity_series) contentHTML += `<div class="info-block"><strong>Reactivity Series:</strong> ${data.reactivity_series}</div>`;
+            if (data.mnemonic) contentHTML += `<div class="info-block"><strong>Mnemonic:</strong> ${data.mnemonic}</div>`;
+
+            if (data.definitions) {
+                 contentHTML += `<h3>Key Terms</h3>`;
+                 for(const term in data.definitions) {
+                    contentHTML += `<p><strong>${term.charAt(0).toUpperCase() + term.slice(1)}:</strong> ${data.definitions[term]}</p>`;
+                 }
+            }
+            
+            // Function to generate a table for examples
+            const generateExamplesTable = (examples) => {
+                if (!examples || examples.length === 0) return '';
+                // Dynamically find all possible headers
+                const headers = new Set(['name', 'equation']);
+                examples.forEach(ex => Object.keys(ex).forEach(key => headers.add(key)));
+                
+                let tableHTML = '<table><thead><tr>';
+                headers.forEach(h => tableHTML += `<th>${h.charAt(0).toUpperCase() + h.slice(1).replace('_', ' ')}</th>`);
+                tableHTML += '</tr></thead><tbody>';
+
+                examples.forEach(ex => {
+                    tableHTML += '<tr>';
+                    headers.forEach(header => {
+                        let cellContent = ex[header] || 'N/A';
+                        if (typeof cellContent === 'object' && cellContent !== null) {
+                            cellContent = `<ul>${Object.entries(cellContent).map(([k, v]) => `<li><strong>${k.replace('_', ' ')}:</strong> ${v}</li>`).join('')}</ul>`;
+                        }
+                        tableHTML += `<td>${header === 'equation' ? `<code>${cellContent}</code>` : cellContent}</td>`;
+                    });
+                    tableHTML += '</tr>';
+                });
+                tableHTML += '</tbody></table>';
+                return tableHTML;
+            };
+
+            if (data.examples) {
+                contentHTML += `<h3>Examples</h3>${generateExamplesTable(data.examples)}`;
+            }
+
+            if (data.categories || data.subtypes) {
+                const items = data.categories || data.subtypes;
+                items.forEach(cat => {
+                    contentHTML += `<h3>${cat.name}</h3>`;
+                    if(cat.description) contentHTML += `<p>${cat.description}</p>`;
+                    contentHTML += generateExamplesTable(cat.examples);
+                });
+            }
+
+            if (data.characteristics) {
+                contentHTML += `<h3>Characteristics</h3><ul>`;
+                data.characteristics.forEach(char => contentHTML += `<li>${char}</li>`);
+                contentHTML += '</ul>';
+            }
+            card.innerHTML = contentHTML;
+        }
+        
+        mainContent.appendChild(card);
+    };
+
+    // --- Add Event Listeners ---
+    navList.addEventListener('click', (e) => {
+        if (e.target.classList.contains('nav-item')) {
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            e.target.classList.add('active');
+            renderContent(e.target.dataset.key);
+        }
+    });
+
+    // --- Initial Render ---
+    const defaultKey = createKey(reactionsJson.find(item => item.is_summary).title);
+    renderContent(defaultKey);
+});
+</script>
+
+</body>
+</html>

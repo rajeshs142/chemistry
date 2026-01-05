@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NCERT Reactivity Series Lab</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --secondary: #64748b;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --bg: #f8fafc;
+            --dark: #0f172a;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            margin: 0;
+            background-color: var(--bg);
+            color: var(--dark);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- Navigation --- */
+        nav {
+            background: var(--dark);
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links button {
+            background: transparent;
+            color: white;
+            border: 1px solid white;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            border-radius: 4px;
+            margin-left: 0.5rem;
+        }
+
+        .nav-links button.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        /* --- Layout --- */
+        #main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: #fff;
+            border-right: 1px solid #e2e8f0;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* --- Reactivity Ladder --- */
+        .ladder {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .metal-rank {
+            padding: 10px;
+            background: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            position: relative;
+        }
+
+        .metal-rank.high { border-left: 5px solid #ef4444; }
+        .metal-rank.mid { border-left: 5px solid #f59e0b; }
+        .metal-rank.low { border-left: 5px solid #22c55e; }
+
+        .ladder-bracket {
+            font-size: 0.7rem;
+            text-align: center;
+            color: var(--secondary);
+            margin: 5px 0;
+            font-style: italic;
+        }
+
+        /* --- Lab Modules --- */
+        .lab-module {
+            display: none;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+        }
+
+        .lab-module.active { display: block; }
+
+        .beaker-zone {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 250px;
+            margin: 40px 0;
+            border-bottom: 4px solid #94a3b8;
+        }
+
+        .beaker {
+            width: 120px;
+            height: 150px;
+            border: 3px solid #cbd5e1;
+            border-top: none;
+            border-radius: 0 0 15px 15px;
+            position: relative;
+            background: rgba(255,255,255,0.2);
+            transition: background 0.5s;
+        }
+
+        .liquid {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 70%;
+            background: rgba(59, 130, 246, 0.5); /* CuSO4 blue */
+            border-radius: 0 0 12px 12px;
+            transition: 1s;
+        }
+
+        .metal-strip {
+            width: 20px;
+            height: 100px;
+            background: #94a3b8;
+            position: absolute;
+            top: -50px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            transition: 0.5s;
+        }
+
+        /* --- Theory Page --- */
+        #theory-view {
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .mnemonic-box {
+            background: #eff6ff;
+            padding: 20px;
+            border-left: 5px solid var(--primary);
+            margin: 20px 0;
+        }
+
+        .method-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+
+        /* --- Bubbles Animation --- */
+        .bubble {
+            position: absolute;
+            bottom: 0;
+            background: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            animation: rise 2s infinite;
+        }
+
+        button {
+                background: #1e293b;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+        }
+        select {
+                padding: 6px 6px;
+        }
+        @keyframes rise {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-100px) scale(1.5); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div><strong>NCERT Reactivity Series Lab</strong></div>
+        <div class="nav-links">
+            <button onclick="showPage('lab')" id="btn-lab" class="active">Virtual Lab</button>
+            <button onclick="showPage('theory')" id="btn-theory">Theory & Concepts</button>
+        </div>
+    </nav>
+
+    <div id="main-container">
+        <!-- Sidebar Reactivity Ladder -->
+        <div class="sidebar">
+            <h3 style="margin-top:0">Reactivity Series</h3>
+            <div class="ladder">
+                <div class="ladder-bracket">Most Reactive</div>
+                <div class="metal-rank high">K (Potassium)</div>
+                <div class="metal-rank high">Na (Sodium)</div>
+                <div class="metal-rank high">Ca (Calcium)</div>
+                <div class="metal-rank high">Mg (Magnesium)</div>
+                <div class="metal-rank high">Al (Aluminium)</div>
+                <div class="ladder-bracket">Decreasing Reactivity ↓</div>
+                <div class="metal-rank mid">Zn (Zinc)</div>
+                <div class="metal-rank mid">Fe (Iron)</div>
+                <div class="metal-rank mid">Pb (Lead)</div>
+                <div class="metal-rank mid" style="background: #fee2e2;">[H] (Hydrogen)</div>
+                <div class="metal-rank mid">Cu (Copper)</div>
+                <div class="ladder-bracket">Least Reactive</div>
+                <div class="metal-rank low">Hg (Mercury)</div>
+                <div class="metal-rank low">Ag (Silver)</div>
+                <div class="metal-rank low">Au (Gold)</div>
+            </div>
+            <p style="font-size: 0.75rem; color: #64748b; margin-top: 20px;">
+                *Hydrogen is a non-metal but included for comparison in acid reactions.
+            </p>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content">
+            
+            <!-- Virtual Lab View -->
+            <div id="lab-view">
+                <div style="display:flex; gap:10px; margin-bottom:20px;">
+                    <button onclick="showModule('displacement')">Displacement Duel</button>
+                    <button onclick="showModule('water')">Water/Acid Test</button>
+                    <button onclick="showModule('extraction')">Extraction Method</button>
+                </div>
+
+                <!-- Module 1: Displacement -->
+                <div id="mod-displacement" class="lab-module active">
+                    <h2>Displacement Reaction Lab</h2>
+                    <p>Select a Metal Strip and a Salt Solution. A more reactive metal will displace a less reactive metal from its solution.</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <label>Metal Strip: </label>
+                        <select id="stripSelect">
+                            <option value="7">Zinc (Zn)</option>
+                            <option value="8">Iron (Fe)</option>
+                            <option value="11">Copper (Cu)</option>
+                            <option value="12">Magnesium (Mg)</option>
+                        </select>
+
+                        <label> Solution: </label>
+                        <select id="solSelect">
+                            <option value="11">Copper Sulphate (Blue)</option>
+                            <option value="8">Ferrous Sulphate (Light Green)</option>
+                            <option value="7">Zinc Sulphate (Colorless)</option>
+                        </select>
+                        
+                        <button onclick="runDisplacement()" style="background:var(--primary); color:white; border:none; padding:8px 15px; border-radius:4px; cursor:pointer;">Dip Metal Strip</button>
+                    </div>
+
+                    <div class="beaker-zone">
+                        <div class="beaker">
+                            <div class="liquid" id="dispLiquid"></div>
+                            <div class="metal-strip" id="dispStrip"></div>
+                        </div>
+                    </div>
+                    <div id="dispResult" style="font-weight:bold; text-align:center;"></div>
+                </div>
+
+                <!-- Module 2: Water/Acid -->
+                <div id="mod-water" class="lab-module">
+                    <h2>Reaction with Water & Acids</h2>
+                    <p>Observe how different metals react with cold water, steam, or dilute HCl.</p>
+                    
+                    <div style="margin: 20px 0;">
+                        <select id="metalWater">
+                            <option value="1">Potassium (K)</option>
+                            <option value="4">Magnesium (Mg)</option>
+                            <option value="8">Iron (Fe)</option>
+                            <option value="11">Copper (Cu)</option>
+                        </select>
+                        <button onclick="testReactant('cold')">Cold Water</button>
+                        <button onclick="testReactant('hot')">Hot Water</button>
+                        <button onclick="testReactant('acid')">Dilute HCl</button>
+                    </div>
+
+                    <div class="beaker-zone">
+                        <div class="beaker" style="width:200px; height:200px;">
+                            <div class="liquid" style="background: rgba(186, 230, 253, 0.6); height: 80%;"></div>
+                            <div class="metal-strip" id="waterStrip" style="height:40px; top:50px;"></div>
+                            <div id="bubbles-container"></div>
+                        </div>
+                    </div>
+                    <div id="waterResult" style="font-weight:bold; text-align:center;"></div>
+                </div>
+
+                <!-- Module 3: Extraction -->
+                <div id="mod-extraction" class="lab-module">
+                    <h2>Metallurgy: Methods of Extraction</h2>
+                    <p>Click on the zones to see how metals are extracted based on their reactivity.</p>
+                    
+                    <div class="method-card" style="border-left:8px solid #ef4444; cursor:pointer;" onclick="alert('Electrolytic Reduction: Since these metals are highly reactive, they cannot be reduced by Carbon. We use electricity to separate them.')">
+                        <strong>Top (K, Na, Ca, Mg, Al)</strong>
+                        <p>Method: Electrolytic Reduction (Electrolysis of molten chlorides/oxides)</p>
+                    </div>
+                    <div class="method-card" style="border-left:8px solid #f59e0b; cursor:pointer;" onclick="alert('Carbon Reduction: These metals are moderately reactive. Their oxides are heated with Carbon (Coke) to obtain the metal.')">
+                        <strong>Middle (Zn, Fe, Pb, Cu)</strong>
+                        <p>Method: Reduction using Carbon (Coke)</p>
+                    </div>
+                    <div class="method-card" style="border-left:8px solid #22c55e; cursor:pointer;" onclick="alert('Native State: These metals are very unreactive. They are often found in pure form or can be extracted by heating alone.')">
+                        <strong>Bottom (Ag, Au)</strong>
+                        <p>Method: Found in Native State / Heat alone</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Theory View -->
+            <div id="theory-view" style="display:none;">
+                <h1>The Reactivity Series</h1>
+                <p>The reactivity series is a list of metals arranged in the order of their decreasing activities. In NCERT Class 10, this is essential for understanding Displacement Reactions and Metallurgy.</p>
+                
+                <div class="mnemonic-box">
+                    <h3>The Mnemonic (Memory Trick)</h3>
+                    <p><strong>P</strong>lease <strong>S</strong>top <strong>C</strong>alling <strong>M</strong>e <strong>A</strong> <strong>Z</strong>ebra <strong>I</strong>nstead <strong>L</strong>earn <strong>H</strong>ow <strong>C</strong>opper <strong>M</strong>ercury <strong>S</strong>aves <strong>G</strong>old</p>
+                    <small>(K, Na, Ca, Mg, Al, Zn, Fe, Pb, [H], Cu, Hg, Ag, Au)</small>
+                </div>
+
+                <h3>Key Rules:</h3>
+                <ul>
+                    <li><strong>Displacement:</strong> A metal higher in the series can displace any metal below it from its salt solution.</li>
+                    <li><strong>Reaction with Water:</strong> 
+                        <ul>
+                            <li>K and Na react violently with cold water (catch fire).</li>
+                            <li>Mg reacts with hot water.</li>
+                            <li>Al, Fe, and Zn react only with steam.</li>
+                            <li>Cu, Ag, Au do not react with water at all.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Reaction with Acid:</strong> Metals above Hydrogen displace it from dilute acids to produce H₂ gas. Metals below (Cu, Ag, Au) show no reaction.</li>
+                </ul>
+                
+                <button onclick="showPage('lab')" style="padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:5px; cursor:pointer;">Go Back to Lab</button>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        const metals = {
+            1: { name: "Potassium", color: "#e2e8f0", react: "violent" },
+            4: { name: "Magnesium", color: "#94a3b8", react: "hot" },
+            7: { name: "Zinc", color: "#cbd5e1", react: "mid" },
+            8: { name: "Iron", color: "#71717a", react: "mid" },
+            11: { name: "Copper", color: "#b45309", react: "low" },
+            12: { name: "Magnesium", color: "#94a3b8", react: "high" }
+        };
+
+        const solutions = {
+            11: { name: "Copper Sulphate", color: "rgba(59, 130, 246, 0.7)", after: "rgba(200, 200, 200, 0.3)" },
+            8: { name: "Ferrous Sulphate", color: "rgba(187, 247, 208, 0.7)", after: "rgba(200, 200, 200, 0.3)" },
+            7: { name: "Zinc Sulphate", color: "rgba(248, 250, 252, 0.4)", after: "rgba(248, 250, 252, 0.4)" }
+        };
+
+        function showPage(page) {
+            document.getElementById('lab-view').style.display = page === 'lab' ? 'block' : 'none';
+            document.getElementById('theory-view').style.display = page === 'theory' ? 'block' : 'none';
+            document.getElementById('btn-lab').classList.toggle('active', page === 'lab');
+            document.getElementById('btn-theory').classList.toggle('active', page === 'theory');
+        }
+
+        function showModule(mod) {
+            document.querySelectorAll('.lab-module').forEach(m => m.classList.remove('active'));
+            document.getElementById('mod-' + mod).classList.add('active');
+        }
+
+        // --- Displacement Logic ---
+        function runDisplacement() {
+            const stripVal = parseInt(document.getElementById('stripSelect').value);
+            const solVal = parseInt(document.getElementById('solSelect').value);
+            const strip = document.getElementById('dispStrip');
+            const liquid = document.getElementById('dispLiquid');
+            const res = document.getElementById('dispResult');
+
+            // Reset
+            strip.style.top = "-50px";
+            strip.style.backgroundColor = metals[stripVal].color;
+            liquid.style.backgroundColor = solutions[solVal].color;
+            res.innerText = "Observing...";
+
+            setTimeout(() => {
+                strip.style.top = "30px"; // Dip
+                setTimeout(() => {
+                    // Check logic: Lower index = More reactive
+                    if (stripVal < solVal) {
+                        liquid.style.backgroundColor = (solVal === 11 && stripVal === 7) ? "rgba(248,250,252,0.4)" : "rgba(187, 247, 208, 0.4)";
+                        strip.style.backgroundColor = "#b45309"; // Brown deposit
+                        res.innerText = `Success! ${metals[stripVal].name} displaced ${metals[solVal].name}. Liquid color changed!`;
+                        res.style.color = "var(--success)";
+                    } else {
+                        res.innerText = `No Reaction. ${metals[stripVal].name} is less reactive than ${metals[solVal].name}.`;
+                        res.style.color = "var(--danger)";
+                    }
+                }, 1000);
+            }, 500);
+        }
+
+        // --- Water/Acid Logic ---
+        function testReactant(type) {
+            const mVal = parseInt(document.getElementById('metalWater').value);
+            const res = document.getElementById('waterResult');
+            const container = document.getElementById('bubbles-container');
+            container.innerHTML = '';
+            
+            let success = false;
+            let msg = "";
+
+            if (type === 'cold') {
+                if (mVal <= 3) { success = true; msg = "Violent reaction! Hydrogen catches fire!"; }
+                else { msg = "No reaction with cold water."; }
+            } else if (type === 'hot') {
+                if (mVal <= 4) { success = true; msg = "Magnesium reacts and starts floating due to H₂ bubbles!"; }
+                else { msg = "No reaction with hot water."; }
+            } else if (type === 'acid') {
+                if (mVal < 9) { success = true; msg = "Rapid evolution of Hydrogen gas bubbles!"; }
+                else { msg = "No reaction. Metal is below Hydrogen in reactivity series."; }
+            }
+
+            res.innerText = msg;
+            if (success) {
+                for(let i=0; i<15; i++) {
+                    let b = document.createElement('div');
+                    b.className = 'bubble';
+                    b.style.left = Math.random() * 100 + "%";
+                    b.style.width = b.style.height = (Math.random() * 10 + 5) + "px";
+                    b.style.animationDelay = Math.random() * 2 + "s";
+                    container.appendChild(b);
+                }
+            }
+        }
+    </script>
+</body>
+</html>

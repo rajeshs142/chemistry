@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indicator Information</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .info-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.07);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            border: 1px solid #e0e6ec;
+        }
+
+        .info-card h2 {
+            font-size: 2rem;
+            color: #1e2a3a;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #007bff;
+        }
+
+        .indicator-section {
+            margin-bottom: 30px;
+        }
+
+        .indicator-section h3 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .indicator-section p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            border: 1px solid #d9e1e8;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        thead {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        tbody tr:nth-child(even) {
+            background-color: #f0f2f5;
+        }
+
+        /* Color Styling for Visual Learning */
+        .color-name {
+            font-weight: bold;
+            padding: 3px 6px;
+            border-radius: 4px;
+            color: #fff; /* Default for colors with dark text */
+        }
+
+        .color-red { background-color: #dc3545; }
+        .color-blue { background-color: #007bff; }
+        .color-pink { background-color: #e83e8c; }
+        .color-yellow { background-color: #ffc107; color: #333; }
+        .color-orange { background-color: #fd7e14; }
+        .color-purple { background-color: #6f42c1; }
+        
+        .color-colorless {
+            font-style: italic;
+            color: #6c757d;
+            font-weight: normal;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="info-card">
+        <h2>Guide to Chemical Indicators</h2>
+
+        <!-- Natural Indicators Section -->
+        <div class="indicator-section">
+            <h3>Natural Indicators</h3>
+            <p>These indicators are obtained from natural sources like plants. Litmus is the most common example.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicator</th>
+                        <th>Color in Acid</th>
+                        <th>Color in Base</th>
+                        <th>Original/Neutral Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Litmus Paper/Solution</strong></td>
+                        <td><span class="color-name color-red">Red</span></td>
+                        <td><span class="color-name color-blue">Blue</span></td>
+                        <td><span class="color-name color-purple">Purple</span> (Solution)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Turmeric</strong></td>
+                        <td><span class="color-name color-yellow">Yellow</span></td>
+                        <td><span class="color-name color-red">Reddish-Brown</span></td>
+                        <td><span class="color-name color-yellow">Yellow</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Synthetic Indicators Section -->
+        <div class="indicator-section">
+            <h3>Synthetic Indicators</h3>
+            <p>These are man-made chemical substances used to determine if a solution is acidic or basic.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicator</th>
+                        <th>Color in Acid</th>
+                        <th>Color in Base</th>
+                        <th>Neutral Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Phenolphthalein</strong></td>
+                        <td class="color-colorless">Colorless</td>
+                        <td><span class="color-name color-pink">Pink</span></td>
+                        <td class="color-colorless">Colorless</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Methyl Orange</strong></td>
+                        <td><span class="color-name color-red">Red</span></td>
+                        <td><span class="color-name color-yellow">Yellow</span></td>
+                        <td><span class="color-name color-orange">Orange</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Olfactory Indicators Section -->
+        <div class="indicator-section">
+            <h3>Olfactory Indicators</h3>
+            <p>These are substances whose smell (odor) changes in acidic or basic media. They are particularly useful for visually impaired students.</p>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Indicator</th>
+                        <th>Odor in Acid</th>
+                        <th>Odor in Base</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Onion Extract</strong></td>
+                        <td>Characteristic smell is retained</td>
+                        <td>Smell is destroyed / cannot be detected</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Vanilla Essence</strong></td>
+                        <td>Characteristic smell is retained</td>
+                        <td>Smell is destroyed / cannot be detected</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Clove Oil</strong></td>
+                        <td>Characteristic smell is retained</td>
+                        <td>Smell is destroyed / cannot be detected</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+</body>
+</html>

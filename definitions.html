@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBSE Class 10 Science - Definitions</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --main-bg: #ffffff;
+            --sidebar-bg: #1e2a3a;
+            --text-color: #333;
+            --sidebar-text: #e0e6f1;
+            --sidebar-hover: #3a4b62;
+            --border-color: #d9e1e8;
+            --accent-color: #007bff;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+        }
+        #sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 25px;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+            border-right: 1px solid var(--border-color);
+        }
+        #sidebar h1 { font-size: 1.6rem; margin-bottom: 25px; color: #fff; }
+        #sidebar h2 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--sidebar-text);
+            border-top: 1px solid var(--sidebar-hover);
+            padding-top: 20px;
+        }
+        #sidebar ul { list-style-type: none; }
+        #sidebar .chapter-filter {
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            margin-bottom: 5px;
+        }
+        #sidebar .chapter-filter:hover, #sidebar .chapter-filter.active {
+            background-color: var(--sidebar-hover);
+            color: #fff;
+        }
+        #main-content {
+            margin-left: 280px;
+            padding: 30px 40px;
+            width: calc(100% - 280px);
+        }
+        #search-container { margin-bottom: 30px; }
+        #search-input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            outline: none;
+            transition: box-shadow 0.2s ease;
+        }
+        #search-input:focus {
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+            border-color: var(--accent-color);
+        }
+        .chapter-section { margin-bottom: 40px; }
+        .chapter-section.hidden { display: none; }
+        .chapter-section h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+            color: var(--sidebar-bg);
+        }
+        .definition-item {
+            background-color: var(--main-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--accent-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        .definition-item.hidden { display: none; }
+        .definition-term { font-weight: 600; font-size: 1.15rem; color: #1e2a3a; }
+        .definition-text { margin-top: 5px; }
+
+        @media (max-width: 992px) {
+            body { flex-direction: column; }
+            #sidebar { position: static; width: 100%; height: auto; }
+            #main-content { margin-left: 0; width: 100%; padding: 20px; }
+            .chapter-section h2 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside id="sidebar">
+        <h1>Science Definitions</h1>
+        <h2 id="filter-title">Filter by Chapter</h2>
+        <ul id="chapter-list"></ul>
+    </aside>
+
+    <main id="main-content">
+        <div id="search-container">
+            <input type="text" id="search-input" placeholder="Search terms or definitions...">
+        </div>
+        <div id="definitions-container">
+            <!-- Definitions will be generated here by JavaScript -->
+        </div>
+    </main>
+
+<script>
+// --- PASTE YOUR NEW, NESTED DEFINITIONS JSON DATA HERE ---
+const definitionsJson = {
+  "definitions": [
+    {
+      "chapter": "Chapter 1: Chemical Reactions and Equations",
+      "terms": [
+        {
+          "term": "Chemical Reaction",
+          "definition": "A process that involves rearrangement of the molecular or ionic structure of a substance, as distinct from a change in physical form or a nuclear reaction, leading to the formation of new substances with new properties."
+        },
+        {
+          "term": "Reactants",
+          "definition": "The substances that take part in a chemical reaction and undergo a chemical change."
+        },
+        {
+          "term": "Products",
+          "definition": "The new substances formed as a result of a chemical reaction."
+        },
+        {
+          "term": "Chemical Equation",
+          "definition": "A symbolic representation of a chemical reaction using chemical formulas, symbols, and coefficients."
+        },
+        {
+          "term": "Balanced Chemical Equation",
+          "definition": "A chemical equation in which the number of atoms of each element is the same on both the reactant and product sides, satisfying the law of conservation of mass."
+        },
+        {
+          "term": "Combination Reaction",
+          "definition": "A reaction in which two or more reactants combine to form a single product."
+        },
+        {
+          "term": "Decomposition Reaction",
+          "definition": "A reaction in which a single reactant breaks down to give two or more simpler products."
+        },
+        {
+          "term": "Thermal Decomposition",
+          "definition": "A decomposition reaction brought about by heating."
+        },
+        {
+          "term": "Electrolytic Decomposition (Electrolysis)",
+          "definition": "A decomposition reaction brought about by passing an electric current through a compound in its molten state or aqueous solution."
+        },
+        {
+          "term": "Photolytic Decomposition (Photolysis)",
+          "definition": "A decomposition reaction brought about by the action of light."
+        },
+        {
+          "term": "Displacement Reaction",
+          "definition": "A reaction in which a more reactive element displaces a less reactive element from its compound."
+        },
+        {
+          "term": "Double Displacement Reaction",
+          "definition": "A reaction in which there is an exchange of ions between two reacting compounds."
+        },
+        {
+          "term": "Precipitation Reaction",
+          "definition": "A double displacement reaction in which an insoluble solid (precipitate) is formed."
+        },
+        {
+          "term": "Precipitate",
+          "definition": "An insoluble solid substance that is formed from a solution during a chemical reaction."
+        },
+        {
+          "term": "Neutralization Reaction",
+          "definition": "A reaction between an acid and a base to form salt and water."
+        },
+        {
+          "term": "Oxidation",
+          "definition": "A process that involves the gain of oxygen, loss of hydrogen, or loss of electrons by a substance."
+        },
+        {
+          "term": "Reduction",
+          "definition": "A process that involves the loss of oxygen, gain of hydrogen, or gain of electrons by a substance."
+        },
+        {
+          "term": "Redox Reaction",
+          "definition": "A chemical reaction in which both oxidation and reduction occur simultaneously."
+        },
+        {
+          "term": "Oxidizing Agent (Oxidant)",
+          "definition": "A substance that causes oxidation of another substance and gets reduced itself."
+        },
+        {
+          "term": "Reducing Agent (Reductant)",
+          "definition": "A substance that causes reduction of another substance and gets oxidized itself."
+        },
+        {
+          "term": "Corrosion",
+          "definition": "The process of slow degradation or eating away of metals due to the action of air, moisture, or chemicals on their surface."
+        },
+        {
+          "term": "Rusting",
+          "definition": "The corrosion of iron, forming a reddish-brown flaky substance called rust (hydrated iron(III) oxide)."
+        },
+        {
+          "term": "Rancidity",
+          "definition": "The condition produced by aerial oxidation of fats and oils in foods marked by unpleasant smell and taste."
+        },
+        {
+          "term": "Antioxidants",
+          "definition": "Substances that are added to foods containing fats and oils to prevent or slow down their oxidation and thus prevent rancidity."
+        },
+        {
+          "term": "Exothermic Reaction",
+          "definition": "A chemical reaction in which heat energy is released or evolved."
+        },
+        {
+          "term": "Endothermic Reaction",
+          "definition": "A chemical reaction in which heat energy is absorbed."
+        }
+      ]
+    },
+    {
+      "chapter": "Chapter 2: Acids, Bases and Salts",
+      "terms": [
+        {
+          "term": "Acid",
+          "definition": "A substance that produces hydrogen ions (H⁺) or hydronium ions (H₃O⁺) when dissolved in water, tastes sour, and turns blue litmus red."
+        },
+        {
+          "term": "Base",
+          "definition": "A substance that produces hydroxide ions (OH⁻) when dissolved in water, tastes bitter, feels soapy, and turns red litmus blue."
+        },
+        {
+          "term": "Alkali",
+          "definition": "A base that is soluble in water."
+        },
+        {
+          "term": "Indicator",
+          "definition": "A substance that changes its color or odor when added to an acidic or basic solution, used to detect the presence of an acid or a base."
+        },
+        {
+          "term": "Litmus",
+          "definition": "A natural indicator obtained from lichens, which is red in acidic solution and blue in basic solution."
+        },
+        {
+          "term": "Phenolphthalein",
+          "definition": "A synthetic indicator which is colorless in acidic and neutral solutions and pink in basic solutions."
+        },
+        {
+          "term": "Methyl Orange",
+          "definition": "A synthetic indicator which is red in acidic solution and yellow in basic solution."
+        },
+        {
+          "term": "Olfactory Indicators",
+          "definition": "Substances whose odor changes in acidic or basic media."
+        },
+        {
+          "term": "Strong Acid",
+          "definition": "An acid that ionizes completely or almost completely in water to produce a high concentration of H⁺ ions."
+        },
+        {
+          "term": "Weak Acid",
+          "definition": "An acid that ionizes only partially in water to produce a low concentration of H⁺ ions."
+        },
+        {
+          "term": "Strong Base",
+          "definition": "A base that ionizes completely or almost completely in water to produce a high concentration of OH⁻ ions."
+        },
+        {
+          "term": "Weak Base",
+          "definition": "A base that ionizes only partially in water to produce a low concentration of OH⁻ ions."
+        },
+        {
+          "term": "pH Scale",
+          "definition": "A scale for measuring hydrogen ion concentration in a solution, ranging from 0 to 14, where pH 7 is neutral, pH < 7 is acidic, and pH > 7 is basic."
+        },
+        {
+          "term": "Universal Indicator",
+          "definition": "A mixture of several indicators that shows different colors at different pH values across the entire pH scale."
+        },
+        {
+          "term": "Antacid",
+          "definition": "A mild base used to neutralize excess acid in the stomach and relieve indigestion."
+        },
+        {
+          "term": "Salt",
+          "definition": "An ionic compound formed from the reaction between an acid and a base (neutralization), consisting of a cation from the base and an anion from the acid."
+        },
+        {
+          "term": "Chlor-alkali Process",
+          "definition": "An industrial process for the electrolysis of aqueous sodium chloride (brine) solution to produce sodium hydroxide, chlorine gas, and hydrogen gas."
+        },
+        {
+          "term": "Bleaching Powder (Calcium Oxychloride, CaOCl₂)",
+          "definition": "A chemical compound used as a bleaching agent and disinfectant."
+        },
+        {
+          "term": "Baking Soda (Sodium Hydrogen Carbonate, NaHCO₃)",
+          "definition": "A mild base used in baking, as an antacid, and in fire extinguishers."
+        },
+        {
+          "term": "Washing Soda (Sodium Carbonate Decahydrate, Na₂CO₃.10H₂O)",
+          "definition": "A chemical compound used as a cleaning agent, in glass and soap industries, and for removing permanent hardness of water."
+        },
+        {
+          "term": "Water of Crystallization",
+          "definition": "The fixed number of water molecules chemically attached to each formula unit of a salt in its crystalline form."
+        },
+        {
+          "term": "Hydrated Salt",
+          "definition": "A salt that contains water of crystallization."
+        },
+        {
+          "term": "Anhydrous Salt",
+          "definition": "A salt that does not contain water of crystallization, or from which water of crystallization has been removed."
+        },
+        {
+          "term": "Plaster of Paris (Calcium Sulphate Hemihydrate, CaSO₄.½H₂O)",
+          "definition": "A white powder that sets into a hard mass on mixing with water, used for making casts and molds."
+        },
+        {
+          "term": "Gypsum (Calcium Sulphate Dihydrate, CaSO₄.2H₂O)",
+          "definition": "A naturally occurring mineral used to make Plaster of Paris."
+        }
+      ]
+    },
+    {
+      "chapter": "Chapter 3: Metals and Non-metals",
+      "terms": [
+        {
+          "term": "Metals",
+          "definition": "Elements that are typically shiny, malleable, ductile, good conductors of heat and electricity, and tend to lose electrons to form positive ions (cations)."
+        },
+        {
+          "term": "Non-metals",
+          "definition": "Elements that are typically dull, brittle, poor conductors of heat and electricity (except graphite), and tend to gain electrons to form negative ions (anions) or share electrons."
+        },
+        {
+          "term": "Malleability",
+          "definition": "The property of metals by which they can be beaten into thin sheets."
+        },
+        {
+          "term": "Ductility",
+          "definition": "The property of metals by which they can be drawn into thin wires."
+        },
+        {
+          "term": "Lustre",
+          "definition": "The shiny appearance of a metal surface."
+        },
+        {
+          "term": "Sonority",
+          "definition": "The property of metals to produce a ringing sound when struck."
+        },
+        {
+          "term": "Basic Oxides",
+          "definition": "Metal oxides that react with acids to form salt and water, and may dissolve in water to form alkalis."
+        },
+        {
+          "term": "Acidic Oxides",
+          "definition": "Non-metal oxides that react with bases to form salt and water, and may dissolve in water to form acids."
+        },
+        {
+          "term": "Amphoteric Oxides",
+          "definition": "Metal oxides that show both acidic and basic behavior, reacting with both acids and bases to form salt and water (e.g., Al₂O₃, ZnO)."
+        },
+        {
+          "term": "Reactivity Series (Activity Series) of Metals",
+          "definition": "A list of metals arranged in decreasing order of their chemical reactivity."
+        },
+        {
+          "term": "Ionic Bond (Electrovalent Bond)",
+          "definition": "The chemical bond formed by the complete transfer of one or more electrons from a metal atom to a non-metal atom, resulting in the formation of oppositely charged ions that are held together by electrostatic forces."
+        },
+        {
+          "term": "Ionic Compounds (Electrovalent Compounds)",
+          "definition": "Compounds formed by ionic bonds."
+        },
+        {
+          "term": "Minerals",
+          "definition": "Naturally occurring chemical substances (elements or compounds) found in the Earth's crust."
+        },
+        {
+          "term": "Ores",
+          "definition": "Minerals from which metals can be extracted profitably and conveniently."
+        },
+        {
+          "term": "Gangue (Matrix)",
+          "definition": "Earthly impurities like sand, soil, and rock associated with an ore."
+        },
+        {
+          "term": "Metallurgy",
+          "definition": "The science and technology of extracting metals from their ores and refining them for use."
+        },
+        {
+          "term": "Concentration of Ore (Enrichment/Dressing)",
+          "definition": "The process of removing gangue from an ore."
+        },
+        {
+          "term": "Roasting",
+          "definition": "The process of heating a sulphide ore strongly in the presence of excess air to convert it into its metal oxide."
+        },
+        {
+          "term": "Calcination",
+          "definition": "The process of heating a carbonate ore strongly in the presence of limited or no air to convert it into its metal oxide."
+        },
+        {
+          "term": "Reduction (in metallurgy)",
+          "definition": "The process of obtaining a metal from its oxide by removing oxygen, often using a reducing agent like carbon."
+        },
+        {
+          "term": "Thermite Reaction",
+          "definition": "A highly exothermic displacement reaction between a metal oxide (like iron(III) oxide) and a more reactive metal powder (like aluminium), used for welding."
+        },
+        {
+          "term": "Electrolytic Reduction",
+          "definition": "The process of extracting highly reactive metals from their molten ores (chlorides or oxides) by passing an electric current."
+        },
+        {
+          "term": "Refining of Metals",
+          "definition": "The process of purifying impure metals to obtain metals of high purity."
+        },
+        {
+          "term": "Electrolytic Refining",
+          "definition": "A method of refining metals where the impure metal is made the anode, a thin strip of pure metal is the cathode, and a soluble salt of the metal is the electrolyte."
+        },
+        {
+          "term": "Anode Mud",
+          "definition": "Impurities that settle down below the anode during electrolytic refining."
+        },
+        {
+          "term": "Alloy",
+          "definition": "A homogeneous mixture of two or more metals, or a metal and a non-metal, designed to have improved properties."
+        },
+        {
+          "term": "Amalgam",
+          "definition": "An alloy in which one of the metals is mercury."
+        },
+        {
+          "term": "Galvanization",
+          "definition": "The process of coating iron or steel with a thin layer of zinc to protect it from rusting."
+        },
+        {
+          "term": "Anodising",
+          "definition": "An electrolytic process for producing a thick protective or decorative oxide layer on a metal, typically aluminium."
+        }
+      ]
+    },
+    {
+      "chapter": "Chapter 4: Carbon and its Compounds",
+      "terms": [
+        {
+          "term": "Organic Compounds",
+          "definition": "Compounds primarily made of carbon atoms, often bonded with hydrogen, oxygen, nitrogen, sulfur, and phosphorus."
+        },
+        {
+          "term": "Covalent Bond",
+          "definition": "A chemical bond formed by the mutual sharing of one or more pairs of electrons between two atoms."
+        },
+        {
+          "term": "Tetravalency (of Carbon)",
+          "definition": "The property of carbon to form four covalent bonds due to its four valence electrons."
+        },
+        {
+          "term": "Catenation",
+          "definition": "The unique ability of carbon atoms to link with other carbon atoms through covalent bonds to form long straight chains, branched chains, or rings."
+        },
+        {
+          "term": "Allotropes",
+          "definition": "Different structural forms of the same element in the same physical state, which have different physical properties but similar chemical properties (e.g., diamond, graphite, fullerenes for carbon)."
+        },
+        {
+          "term": "Hydrocarbons",
+          "definition": "Organic compounds containing only carbon and hydrogen atoms."
+        },
+        {
+          "term": "Saturated Hydrocarbons (Alkanes)",
+          "definition": "Hydrocarbons in which all carbon-carbon bonds are single covalent bonds. (General formula: CₙH₂ₙ₊₂)."
+        },
+        {
+          "term": "Unsaturated Hydrocarbons",
+          "definition": "Hydrocarbons that contain one or more carbon-carbon double bonds (alkenes) or triple bonds (alkynes)."
+        },
+        {
+          "term": "Alkenes",
+          "definition": "Unsaturated hydrocarbons containing at least one carbon-carbon double bond. (General formula: CₙH₂ₙ)."
+        },
+        {
+          "term": "Alkynes",
+          "definition": "Unsaturated hydrocarbons containing at least one carbon-carbon triple bond. (General formula: CₙH₂ₙ₋₂)."
+        },
+        {
+          "term": "Isomers (Structural Isomers)",
+          "definition": "Compounds that have the same molecular formula but different structural arrangements of atoms, and thus different properties."
+        },
+        {
+          "term": "Functional Group",
+          "definition": "An atom or a group of atoms present in an organic molecule that largely determines its characteristic chemical properties."
+        },
+        {
+          "term": "Homologous Series",
+          "definition": "A series of organic compounds having the same functional group and similar chemical properties, in which successive members differ by a -CH₂ unit."
+        },
+        {
+          "term": "Combustion (of organic compounds)",
+          "definition": "The process of burning an organic compound in the presence of oxygen to produce carbon dioxide, water, heat, and light."
+        },
+        {
+          "term": "Oxidation (of alcohols)",
+          "definition": "The conversion of an alcohol to a carboxylic acid (or aldehyde/ketone) by reaction with an oxidizing agent."
+        },
+        {
+          "term": "Addition Reaction",
+          "definition": "A reaction characteristic of unsaturated hydrocarbons where atoms are added across a double or triple bond, converting it to a single or double bond respectively."
+        },
+        {
+          "term": "Hydrogenation",
+          "definition": "An addition reaction in which hydrogen is added to an unsaturated hydrocarbon in the presence of a catalyst (like nickel or palladium) to form a saturated hydrocarbon."
+        },
+        {
+          "term": "Substitution Reaction",
+          "definition": "A reaction characteristic of saturated hydrocarbons where one or more hydrogen atoms are replaced by another atom or group of atoms (e.g., a halogen)."
+        },
+        {
+          "term": "Ethanol (Ethyl Alcohol, C₂H₅OH)",
+          "definition": "An alcohol commonly used as a solvent, fuel, and in alcoholic beverages."
+        },
+        {
+          "term": "Ethanoic Acid (Acetic Acid, CH₃COOH)",
+          "definition": "A carboxylic acid, the main component of vinegar."
+        },
+        {
+          "term": "Esterification",
+          "definition": "The reaction between a carboxylic acid and an alcohol in the presence of an acid catalyst (like concentrated H₂SO₄) to form an ester, a sweet-smelling compound."
+        },
+        {
+          "term": "Ester",
+          "definition": "An organic compound formed by the esterification reaction, characterized by the -COOR functional group."
+        },
+        {
+          "term": "Saponification",
+          "definition": "The process of hydrolysis of an ester (especially fats or oils) with an alkali (like NaOH) to produce an alcohol and the sodium salt of a carboxylic acid (soap)."
+        },
+        {
+          "term": "Soaps",
+          "definition": "Sodium or potassium salts of long-chain fatty acids (carboxylic acids), used as cleansing agents."
+        },
+        {
+          "term": "Micelle",
+          "definition": "An aggregate of soap or detergent molecules in water, where the hydrophobic tails are in the interior and the hydrophilic heads are on the surface, capable of entrapping oil or grease."
+        },
+        {
+          "term": "Detergents (Synthetic Detergents)",
+          "definition": "Cleansing agents that are sodium salts of long-chain benzene sulphonic acids or long-chain alkyl hydrogen sulphates, which can lather even in hard water."
+        },
+        {
+          "term": "Hard Water",
+          "definition": "Water that contains dissolved salts of calcium and magnesium, which forms scum with soap."
+        }
+      ]
+    }
+  ]
+};
+// ------------------------------------
+
+document.addEventListener('DOMContentLoaded', function() {
+    const data = definitionsJson.definitions;
+    const sidebarList = document.getElementById('chapter-list');
+    const container = document.getElementById('definitions-container');
+    const searchInput = document.getElementById('search-input');
+
+    const chapters = ['All Chapters', ...data.map(item => item.chapter)];
+
+    // Populate sidebar filters
+    chapters.forEach(chapter => {
+        const li = document.createElement('li');
+        li.className = 'chapter-filter';
+        li.textContent = chapter;
+        li.dataset.chapter = chapter;
+        if (chapter === 'All Chapters') {
+            li.classList.add('active');
+        }
+        sidebarList.appendChild(li);
+    });
+
+    // Populate main content with sections and definitions
+    data.forEach(chapterData => {
+        const section = document.createElement('section');
+        section.className = 'chapter-section';
+        // Use a clean ID for linking
+        section.id = chapterData.chapter.replace(/[^a-zA-Z0-9]/g, '-');
+        
+        const h2 = document.createElement('h2');
+        h2.textContent = chapterData.chapter;
+        section.appendChild(h2);
+
+        // Iterate through the nested "terms" array
+        chapterData.terms.forEach(def => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'definition-item';
+            itemDiv.innerHTML = `
+                <div class="definition-term">${def.term}</div>
+                <div class="definition-text">${def.definition}</div>
+            `;
+            section.appendChild(itemDiv);
+        });
+        container.appendChild(section);
+    });
+
+    // --- Add Event Listeners ---
+    const allSections = document.querySelectorAll('.chapter-section');
+    const allItems = document.querySelectorAll('.definition-item');
+    const chapterFilters = document.querySelectorAll('.chapter-filter');
+
+    const applyFilters = () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        const activeChapter = document.querySelector('.chapter-filter.active').dataset.chapter;
+
+        allSections.forEach(section => {
+            let sectionHasVisibleItems = false;
+            const itemsInSection = section.querySelectorAll('.definition-item');
+
+            itemsInSection.forEach(item => {
+                const term = item.querySelector('.definition-term').textContent.toLowerCase();
+                const definition = item.querySelector('.definition-text').textContent.toLowerCase();
+                const searchMatch = term.includes(searchTerm) || definition.includes(searchTerm);
+                
+                if (searchMatch) {
+                    item.classList.remove('hidden');
+                    sectionHasVisibleItems = true;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            // The section's h2.textContent is the chapter name
+            const chapterName = section.querySelector('h2').textContent;
+            const chapterMatch = activeChapter === 'All Chapters' || chapterName === activeChapter;
+            
+            if (chapterMatch && sectionHasVisibleItems) {
+                section.classList.remove('hidden');
+            } else {
+                section.classList.add('hidden');
+            }
+        });
+    };
+    
+    chapterFilters.forEach(filter => {
+        filter.addEventListener('click', () => {
+            chapterFilters.forEach(f => f.classList.remove('active'));
+            filter.classList.add('active');
+            applyFilters();
+        });
+    });
+
+    searchInput.addEventListener('input', applyFilters);
+});
+</script>
+
+</body>
+</html>

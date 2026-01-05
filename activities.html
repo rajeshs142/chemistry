@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBSE Class 10 Science - Activities</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --sidebar-bg: #1e2a3a;
+            --text-color: #333;
+            --sidebar-text: #e0e6f1;
+            --sidebar-hover: #3a4b62;
+            --border-color: #d9e1e8;
+            --accent-color: #28a745; /* Green for activities */
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            display: flex;
+        }
+        #sidebar {
+            width: 280px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 25px;
+            position: fixed;
+            height: 100%;
+            overflow-y: auto;
+        }
+        #sidebar h1 { font-size: 1.6rem; margin-bottom: 25px; color: #fff; }
+        #sidebar h2 {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--sidebar-text);
+            border-top: 1px solid var(--sidebar-hover);
+            padding-top: 20px;
+        }
+        #sidebar ul { list-style-type: none; }
+        #sidebar .chapter-filter {
+            cursor: pointer;
+            padding: 10px 15px;
+            border-radius: 6px;
+            transition: background-color 0.2s ease;
+            margin-bottom: 5px;
+        }
+        #sidebar .chapter-filter:hover, #sidebar .chapter-filter.active {
+            background-color: var(--sidebar-hover);
+            color: #fff;
+        }
+        #main-content {
+            margin-left: 280px;
+            padding: 30px 40px;
+            width: calc(100% - 280px);
+        }
+        .chapter-section { margin-bottom: 40px; }
+        .chapter-section.hidden { display: none; }
+        .chapter-section h2 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+            color: var(--sidebar-bg);
+        }
+        .activity-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+        .activity-header {
+            padding: 20px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .activity-header h3 { font-size: 1.25rem; color: #1e2a3a; }
+        .activity-header .toggle-icon { font-size: 1.5rem; transition: transform 0.3s ease; }
+        .activity-card.open .toggle-icon { transform: rotate(180deg); }
+        .activity-body {
+            padding: 0 25px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+        }
+        .activity-card.open .activity-body {
+            padding: 25px;
+            max-height: 2000px; /* A large value to allow expansion */
+        }
+        .activity-body h4 {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            margin-top: 15px;
+            margin-bottom: 8px;
+        }
+        .activity-body ul, .activity-body ol {
+            padding-left: 20px;
+        }
+        .activity-body li { margin-bottom: 8px; }
+
+        @media (max-width: 992px) {
+            body { flex-direction: column; }
+            #sidebar { position: static; width: 100%; height: auto; }
+            #main-content { margin-left: 0; width: 100%; padding: 20px; }
+            .chapter-section h2 { font-size: 1.75rem; }
+        }
+    </style>
+</head>
+<body>
+    <aside id="sidebar">
+        <h1>Science Activities</h1>
+        <h2 id="filter-title">Filter by Chapter</h2>
+        <ul id="chapter-list"></ul>
+    </aside>
+    <main id="main-content">
+        <div id="activities-container">
+            <!-- Activities will be generated here by JavaScript -->
+        </div>
+    </main>
+<script>
+// --- PASTE YOUR ACTIVITIES JSON DATA HERE ---
+const activitiesJson = {
+    "activities": [
+        {
+            "chapter": "Chemical Reactions and Equations",
+            "title": "Activity 1.6: Electrolysis of Water (Hofmann's Voltameter Experiment)",
+            "aim": "To demonstrate the decomposition of water into hydrogen and oxygen gases by passing electric current.",
+            "materials_required": [
+                "Hofmann's voltameter apparatus",
+                "Dilute sulphuric acid (acidulated water)",
+                "DC power supply (6-12V)",
+                "Battery and connecting wires",
+                "Two test tubes",
+                "Measuring cylinder",
+                "Wooden splinter"
+            ],
+            "procedure": [
+                "Fill the Hofmann's voltameter with water acidified with a few drops of dilute sulphuric acid.",
+                "Connect the electrodes to a DC power source (6-12V).",
+                "Ensure both graduated tubes are filled completely with the electrolyte.",
+                "Switch on the power supply.",
+                "Observe the formation of gases at both electrodes.",
+                "Collect the gases in separate test tubes.",
+                "Test the gases with a burning splinter and a glowing splinter."
+            ],
+            "observations": [
+                "Bubbles of gases evolve at both electrodes.",
+                "Gas at cathode (negative electrode) collects twice as fast as at anode.",
+                "Gas at cathode burns with a 'pop' sound when tested with a burning splinter (hydrogen).",
+                "Gas at anode rekindles a glowing splinter (oxygen).",
+                "Volume ratio: Hydrogen:Oxygen = 2:1 by volume."
+            ],
+            "conclusion": "Water decomposes into hydrogen and oxygen gases when electric current is passed through acidified water. This is an electrolytic decomposition reaction: 2H₂O(l) → 2H₂(g) + O₂(g). The volume ratio confirms the molecular composition of water (H₂O)."
+        },
+        {
+            "chapter": "Chemical Reactions and Equations",
+            "title": "Activity 1.1: Burning of Magnesium Ribbon",
+            "aim": "To observe the chemical reaction when magnesium ribbon is burnt in air.",
+            "materials_required": [
+                "Magnesium ribbon (2-3 cm)",
+                "Sandpaper",
+                "Pair of tongs",
+                "Bunsen burner or spirit lamp",
+                "Watch glass"
+            ],
+            "procedure": [
+                "Clean the magnesium ribbon with sandpaper to remove the oxide layer.",
+                "Hold the cleaned magnesium ribbon with a pair of tongs.",
+                "Heat the magnesium ribbon over a flame.",
+                "Collect the white ash formed on a watch glass.",
+                "Allow it to cool and examine the product."
+            ],
+            "observations": [
+                "Magnesium ribbon burns with a dazzling white flame.",
+                "White ash is formed as the product.",
+                "The ash is magnesium oxide (MgO)."
+            ],
+            "conclusion": "Magnesium reacts with oxygen from the air to form magnesium oxide. This is a combination reaction: 2Mg(s) + O₂(g) → 2MgO(s). The reaction is exothermic."
+        },
+        {
+            "chapter": "Acids, Bases and Salts",
+            "title": "Activity 2.3: Effect of Dilution on Acid Strength",
+            "aim": "To study the effect of dilution on the strength of an acid.",
+            "materials_required": [
+                "Concentrated hydrochloric acid (HCl)",
+                "Concentrated acetic acid (CH₃COOH)",
+                "Beakers (3)",
+                "Measuring cylinder",
+                "Universal indicator/pH paper",
+                "Distilled water",
+                "Glass rod"
+            ],
+            "procedure": [
+                "Take 1 mL of concentrated HCl in a beaker.",
+                "Add 10 mL of water and stir.",
+                "Test the pH using universal indicator or pH paper.",
+                "Repeat the dilution with 100 mL of water.",
+                "Perform the same procedure with concentrated acetic acid.",
+                "Compare the pH changes in both cases."
+            ],
+            "observations": [
+                "Concentrated HCl shows very low pH (0-1).",
+                "After dilution, pH increases but remains acidic.",
+                "Concentrated acetic acid shows higher pH than HCl initially.",
+                "On dilution, pH increases more gradually compared to HCl.",
+                "HCl shows greater change in H⁺ concentration per unit dilution."
+            ],
+            "conclusion": "Dilution decreases the concentration of H⁺ ions, increasing pH. Strong acids (HCl) show more dramatic changes in pH on dilution compared to weak acids (acetic acid). pH = -log[H⁺], so dilution affects concentration directly."
+        },
+        {
+            "chapter": "Acids, Bases and Salts",
+            "title": "Activity 2.6: Reaction of Acids with Metal Carbonates",
+            "aim": "To study the reaction of acids with metal carbonates and metal hydrogen carbonates.",
+            "materials_required": [
+                "Sodium carbonate (Na₂CO₃)",
+                "Sodium bicarbonate (NaHCO₃)",
+                "Dilute hydrochloric acid",
+                "Dilute sulphuric acid",
+                "Test tubes",
+                "Delivery tube",
+                "Lime water",
+                "Test tube stand"
+            ],
+            "procedure": [
+                "Take 0.5g of sodium carbonate in a test tube.",
+                "Add 2 mL of dilute HCl to it.",
+                "Pass the gas evolved through lime water.",
+                "Repeat the experiment with sodium bicarbonate.",
+                "Repeat with dilute sulphuric acid.",
+                "Observe the changes in all cases."
+            ],
+            "observations": [
+                "Effervescence occurs immediately in all cases.",
+                "The gas evolved turns lime water milky.",
+                "Reaction with sodium bicarbonate is faster and more vigorous.",
+                "Similar reactions occur with sulphuric acid.",
+                "The reactions are highly exothermic."
+            ],
+            "conclusion": "Acids react with metal carbonates and bicarbonates to produce salt, water, and carbon dioxide gas: \n1) Na₂CO₃(s) + 2HCl(aq) → 2NaCl(aq) + H₂O(l) + CO₂(g)\n2) NaHCO₃(s) + HCl(aq) → NaCl(aq) + H₂O(l) + CO₂(g)\nThe CO₂ gas turns lime water milky due to formation of calcium carbonate."
+        },
+        {
+            "chapter": "Metals and Non-metals",
+            "title": "Activity 3.1: Reaction of Metals with Acids",
+            "aim": "To study the reaction of different metals with dilute hydrochloric acid.",
+            "materials_required": [
+                "Magnesium ribbon",
+                "Zinc granules",
+                "Iron filings",
+                "Copper turnings",
+                "Dilute hydrochloric acid (1:10)",
+                "Test tubes (4)",
+                "Test tube stand",
+                "Matchbox",
+                "Soap solution"
+            ],
+            "procedure": [
+                "Take four clean test tubes and label them A, B, C, D.",
+                "Add small pieces of magnesium, zinc, iron, and copper to tubes A, B, C, D respectively.",
+                "Add 5 mL of dilute HCl to each test tube.",
+                "Observe the reactions carefully.",
+                "Test the gas evolved with a burning splinter.",
+                "Collect the gas in soap bubbles and test."
+            ],
+            "observations": [
+                "Magnesium: Reacts violently with effervescence, gas burns with pop sound.",
+                "Zinc: Reacts vigorously with effervescence, gas burns with pop sound.",
+                "Iron: Reacts slowly with effervescence, gas burns with pop sound.",
+                "Copper: No reaction observed.",
+                "The gas evolved is hydrogen (H₂)."
+            ],
+            "conclusion": "Metals above hydrogen in reactivity series displace hydrogen from dilute acids. Magnesium and zinc are highly reactive, iron is moderately reactive, while copper does not react as it is below hydrogen. General reaction: Metal + Acid → Salt + Hydrogen gas."
+        },
+        {
+            "chapter": "Metals and Non-metals",
+            "title": "Activity 3.10: Displacement Reactions",
+            "aim": "To study displacement reactions between metals and metal salt solutions.",
+            "materials_required": [
+                "Copper sulphate solution",
+                "Zinc sulphate solution",
+                "Iron sulphate solution",
+                "Silver nitrate solution",
+                "Zinc granules",
+                "Iron nails",
+                "Copper turnings",
+                "Silver foil",
+                "Test tubes",
+                "Test tube stand"
+            ],
+            "procedure": [
+                "Take four test tubes and label them.",
+                "Add 5 mL of copper sulphate solution to test tube 1.",
+                "Add 5 mL of zinc sulphate solution to test tube 2.",
+                "Add 5 mL of iron sulphate solution to test tube 3.",
+                "Add 5 mL of silver nitrate solution to test tube 4.",
+                "Add zinc granules to all four test tubes.",
+                "Observe for 10-15 minutes.",
+                "Repeat with other metals."
+            ],
+            "observations": [
+                "Zinc in CuSO₄: Blue color fades, brown deposit forms, Zn + CuSO₄ → ZnSO₄ + Cu",
+                "Zinc in FeSO₄: No visible reaction initially, slow reaction may occur",
+                "Zinc in AgNO₃: Shiny silver deposit forms immediately, Zn + 2AgNO₃ → Zn(NO₃)₂ + 2Ag",
+                "Iron in CuSO₄: Blue color fades, brown deposit forms, Fe + CuSO₄ → FeSO₄ + Cu",
+                "Copper in AgNO₃: Shiny silver deposit forms, Cu + 2AgNO₃ → Cu(NO₃)₂ + 2Ag"
+            ],
+            "conclusion": "A more reactive metal can displace a less reactive metal from its salt solution. This confirms the reactivity series: Zn > Fe > Cu > Ag. Displacement reaction: Metal A + Salt of metal B → Salt of metal A + Metal B."
+        },
+        {
+            "chapter": "Carbon and its Compounds",
+            "title": "Activity 4.2: Combustion of Carbon Compounds",
+            "aim": "To study the combustion of various carbon compounds.",
+            "materials_required": [
+                "Ethanol",
+                "Acetone",
+                "Hexane",
+                "Bunsen burner",
+                "Evaporating dishes (3)",
+                "Glass rod",
+                "Lime water",
+                "Test tubes"
+            ],
+            "procedure": [
+                "Take three clean evaporating dishes.",
+                "Add 2 mL of ethanol to the first dish.",
+                "Add 2 mL of acetone to the second dish.",
+                "Add 2 mL of hexane to the third dish.",
+                "Ignite each compound carefully using a burning splinter.",
+                "Observe the nature of the flame.",
+                "Test the gases produced with lime water."
+            ],
+            "observations": [
+                "Ethanol: Burns with a blue flame, no soot, water droplets form, CO₂ turns lime water milky.",
+                "Acetone: Burns with a yellow flame, slight soot, CO₂ produced.",
+                "Hexane: Burns with a luminous yellow sooty flame, black smoke, more soot deposition.",
+                "All produce CO₂ and H₂O as combustion products."
+            ],
+            "conclusion": "Combustion of carbon compounds produces carbon dioxide, water vapor, heat and light. Complete combustion gives blue flame (ethanol), while incomplete combustion gives yellow sooty flame (hexane) due to unburnt carbon particles. General reaction: CₓHᵧ + (x + y/4)O₂ → xCO₂ + (y/2)H₂O + Heat + Light."
+        },
+        {
+            "chapter": "Acids, Bases and Salts",
+            "title": "Activity 2.13: Water of Crystallization",
+            "aim": "To study the water of crystallization in hydrated salts.",
+            "materials_required": [
+                "Copper sulphate crystals (CuSO₄·5H₂O)",
+                "Ferrous sulphate crystals (FeSO₄·7H₂O)",
+                "China dish (2)",
+                "Tripod stand",
+                "Wire gauze",
+                "Bunsen burner",
+                "Test tubes",
+                "Dropper"
+            ],
+            "procedure": [
+                "Take 2g of blue copper sulphate crystals in a clean dry china dish.",
+                "Heat the china dish strongly for 10-15 minutes.",
+                "Observe the color change.",
+                "Allow it to cool and add 2-3 drops of water.",
+                "Repeat the experiment with green ferrous sulphate crystals.",
+                "Observe the changes carefully."
+            ],
+            "observations": [
+                "Copper sulphate: Blue crystals turn white, water droplets form on cooler parts, on adding water, turns blue again with hissing sound.",
+                "Ferrous sulphate: Green crystals turn white, smell of burning sulphur, brownish residue forms, doesn't regain original color.",
+                "The water lost is water of crystallization."
+            ],
+            "conclusion": "Hydrated salts contain water molecules chemically combined (water of crystallization). On heating, they lose water and become anhydrous. Some like CuSO₄·5H₂O can be rehydrated, while others like FeSO₄·7H₂O decompose on heating. CuSO₄·5H₂O → CuSO₄ + 5H₂O (reversible)."
+        }
+    ]
+};
+    // ------------------------------------
+document.addEventListener('DOMContentLoaded', function() {
+    const data = activitiesJson.activities;
+    const sidebarList = document.getElementById('chapter-list');
+    const container = document.getElementById('activities-container');
+
+    const activitiesByChapter = data.reduce((acc, item) => {
+        (acc[item.chapter] = acc[item.chapter] || []).push(item);
+        return acc;
+    }, {});
+
+    const chapters = ['All Chapters', ...Object.keys(activitiesByChapter)];
+
+    chapters.forEach(chapter => {
+        const li = document.createElement('li');
+        li.className = 'chapter-filter';
+        li.textContent = chapter;
+        li.dataset.chapter = chapter;
+        if (chapter === 'All Chapters') {
+            li.classList.add('active');
+        }
+        sidebarList.appendChild(li);
+    });
+
+    for (const chapter in activitiesByChapter) {
+        const section = document.createElement('section');
+        section.className = 'chapter-section';
+        section.id = chapter.replace(/\s+/g, '-');
+        
+        const h2 = document.createElement('h2');
+        h2.textContent = chapter;
+        section.appendChild(h2);
+
+        activitiesByChapter[chapter].forEach(activity => {
+            const card = document.createElement('div');
+            card.className = 'activity-card';
+            
+            let materialsHTML = Array.isArray(activity.materials_required) ? `<ul>${activity.materials_required.map(m => `<li>${m}</li>`).join('')}</ul>` : `<p>${activity.materials_required}</p>`;
+            let procedureHTML = Array.isArray(activity.procedure) ? `<ol>${activity.procedure.map(p => `<li>${p}</li>`).join('')}</ol>` : `<p>${activity.procedure}</p>`;
+            let observationHTML = Array.isArray(activity.observation) ? `<ul>${activity.observation.map(o => `<li>${o}</li>`).join('')}</ul>` : `<p>${activity.observation}</p>`;
+
+            card.innerHTML = `
+                <div class="activity-header">
+                    <h3>${activity.title}</h3>
+                    <div class="toggle-icon">▼</div>
+                </div>
+                <div class="activity-body">
+                    <h4>Aim</h4>
+                    <p>${activity.aim}</p>
+                    <h4>Materials Required</h4>
+                    ${materialsHTML}
+                    <h4>Procedure</h4>
+                    ${procedureHTML}
+                    <h4>Observation</h4>
+                    ${observationHTML}
+                    <h4>Conclusion/Inference</h4>
+                    <p>${activity.conclusion}</p>
+                </div>
+            `;
+            section.appendChild(card);
+        });
+        container.appendChild(section);
+    }
+
+    // --- Add Event Listeners ---
+    document.querySelectorAll('.activity-header').forEach(header => {
+        header.addEventListener('click', () => {
+            header.parentElement.classList.toggle('open');
+        });
+    });
+
+    const allSections = document.querySelectorAll('.chapter-section');
+    const chapterFilters = document.querySelectorAll('.chapter-filter');
+    
+    chapterFilters.forEach(filter => {
+        filter.addEventListener('click', () => {
+            chapterFilters.forEach(f => f.classList.remove('active'));
+            filter.classList.add('active');
+            const activeChapter = filter.dataset.chapter;
+            
+            allSections.forEach(section => {
+                if (activeChapter === 'All Chapters' || section.id === activeChapter.replace(/\s+/g, '-')) {
+                    section.classList.remove('hidden');
+                } else {
+                    section.classList.add('hidden');
+                }
+            });
+        });
+    });
+});
+</script>
+
+</body>
+</html>

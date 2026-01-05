@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NCERT Class 10: Chemical Equation Lab</title>
+    <style>
+        :root {
+            --sidebar-w: 360px;
+            --primary: #2563eb;
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --accent: #3b82f6;
+        }
+
+        body {
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+        }
+
+        /* --- Left Sidebar --- */
+        #sidebar {
+            width: var(--sidebar-w);
+            background: #0f172a;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+        }
+        .sidebar-header { padding: 25px 20px; background: #1e293b; font-size: 1.1rem; font-weight: bold; border-bottom: 1px solid #334155; }
+        .rxn-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex-grow: 1; }
+        .rxn-item {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid #1e293b;
+            transition: 0.2s;
+            font-size: 0.95rem;
+            color: #94a3b8;
+        }
+        .rxn-item:hover { background: #1e293b; color: white; }
+        .rxn-item.active { background: var(--primary); color: white; border-left: 4px solid #fff; }
+
+        /* --- Right Main Pane --- */
+        #main {
+            flex-grow: 1;
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .section {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* Equation UI */
+        .eq-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .coeff-box {
+            width: 55px;
+            font-size: 1.5rem;
+            text-align: center;
+            border: 3px solid var(--primary);
+            border-radius: 8px;
+            padding: 5px;
+            background: #eff6ff;
+        }
+
+        /* Description / Definition */
+        .details-box h2 { margin-top: 0; color: var(--primary); }
+        .details-box ul { padding-left: 20px; line-height: 1.6; }
+        .details-box li { margin-bottom: 8px; }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; border: 1px solid #e2e8f0; text-align: center; }
+        th { background: #f1f5f9; font-size: 0.8rem; letter-spacing: 1px; }
+        .balanced { background: #dcfce7; color: #166534; font-weight: bold; }
+        .unbalanced { background: #fee2e2; color: #991b1b; font-weight: bold; }
+
+        /* Canvas */
+        canvas {
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            width: 100%;
+            height: 300px;
+        }
+
+        .solve-btn {
+            background: #1e293b; color: white; border: none; padding: 10px 20px;
+            border-radius: 6px; cursor: pointer; font-weight: bold;
+        }
+        .solve-btn:hover { background: var(--primary); }
+        #main {
+    overflow-x: auto; /* Adds horizontal scrollbar if equation is too wide */
+}
+canvas {
+    min-width: 1200px; /* Forces the canvas to be wide enough for big equations */
+}
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <div class="sidebar-header">Chemical Reactions</div>
+        <ul class="rxn-list" id="rxnList"></ul>
+    </div>
+
+    <div id="main">
+        <div class="section details-box">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <h2 id="rxnTitle">Select a Reaction</h2>
+                    <p id="rxnDef" style="font-style: italic; color: #475569;"></p>
+                </div>
+                <button class="solve-btn" onclick="autoSolve()">Auto-Balance</button>
+            </div>
+            <ul id="rxnBullets"></ul>
+        </div>
+
+        <div class="section">
+            <div class="eq-display" id="eqContainer"></div>
+        </div>
+
+        <div class="section">
+            <h3 style="margin-top:0">Atom Inventory Table</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Element</th>
+                        <th>Reactants (LHS)</th>
+                        <th>Status</th>
+                        <th>Products (RHS)</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryTable"></tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <h3 style="margin-top:0">Molecular Visualization</h3>
+            <canvas id="chemCanvas"></canvas>
+        </div>
+    </div>
+
+<script>
+const reactions = [
+    {
+        "title": "Burning of Magnesium Ribbon in Air",
+        "type": "Combination Reaction, Redox Reaction",
+        "definition": "A reaction in which a single product is formed from two or more reactants.",
+        "bullets": [
+            "Magnesium (a metal) reacts with Oxygen (a non-metal) from the air.",
+            "It burns with a dazzling white flame.",
+            "A white powder of Magnesium Oxide is formed.",
+            "Magnesium is oxidized (gains oxygen) and Oxygen is reduced."
+        ],
+        "parts": [
+            { "formula": "Mg", "atoms": {"Mg": 1}, "side": "lhs", "name": "Magnesium" },
+            { "formula": "O₂", "atoms": {"O": 2}, "side": "lhs", "name": "Oxygen" },
+            { "formula": "MgO", "atoms": {"Mg": 1, "O": 1}, "side": "rhs", "name": "Magnesium Oxide" }
+        ],
+        "solution": [2, 1, 2]
+    },
+    {
+        "title": "Reaction of Zinc with Dilute Sulphuric Acid",
+        "type": "Displacement Reaction",
+        "definition": "A reaction in which a more reactive element displaces a less reactive element from its compound.",
+        "bullets": [
+            "Zinc is more reactive than Hydrogen.",
+            "Bubbles of a colorless and odorless gas are evolved.",
+            "The gas (Hydrogen) burns with a 'pop' sound when a burning splint is brought near it.",
+            "The reaction is exothermic (the flask gets warm)."
+        ],
+        "parts": [
+            { "formula": "Zn", "atoms": {"Zn": 1}, "side": "lhs", "name": "Zinc" },
+            { "formula": "H₂SO₄", "atoms": {"H": 2, "S": 1, "O": 4}, "side": "lhs", "name": "Sulphuric Acid" },
+            { "formula": "ZnSO₄", "atoms": {"Zn": 1, "S": 1, "O": 4}, "side": "rhs", "name": "Zinc Sulphate" },
+            { "formula": "H₂", "atoms": {"H": 2}, "side": "rhs", "name": "Hydrogen Gas" }
+        ],
+        "solution": [1, 1, 1, 1]
+    },
+    {
+        "title": "Reaction of Lead Nitrate and Potassium Iodide",
+        "type": "Double Displacement Reaction, Precipitation Reaction",
+        "definition": "A reaction in which there is an exchange of ions between two reacting compounds, often forming an insoluble solid.",
+        "bullets": [
+            "Both reactant solutions are colorless.",
+            "A yellow insoluble solid (precipitate) of Lead Iodide is formed instantly.",
+            "The ions Pb²⁺ and K⁺ exchange places with I⁻ and NO₃⁻."
+        ],
+        "parts": [
+            { "formula": "Pb(NO₃)₂", "atoms": {"Pb": 1, "N": 2, "O": 6}, "side": "lhs", "name": "Lead(II) Nitrate" },
+            { "formula": "KI", "atoms": {"K": 1, "I": 1}, "side": "lhs", "name": "Potassium Iodide" },
+            { "formula": "PbI₂", "atoms": {"Pb": 1, "I": 2}, "side": "rhs", "name": "Lead(II) Iodide" },
+            { "formula": "KNO₃", "atoms": {"K": 1, "N": 1, "O": 3}, "side": "rhs", "name": "Potassium Nitrate" }
+        ],
+        "solution": [1, 2, 1, 2]
+    },
+    {
+        "title": "Reaction of Quicklime with Water",
+        "type": "Combination Reaction, Exothermic Reaction",
+        "definition": "A reaction in which a single product is formed from two or more reactants.",
+        "bullets": [
+            "Calcium Oxide (Quicklime) is a white solid.",
+            "It reacts vigorously with water, producing a hissing sound.",
+            "A large amount of heat is released, making the container hot.",
+            "The product, Calcium Hydroxide (Slaked Lime), is a suspension that settles to form a solution (limewater)."
+        ],
+        "parts": [
+            { "formula": "CaO", "atoms": {"Ca": 1, "O": 1}, "side": "lhs", "name": "Calcium Oxide" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "lhs", "name": "Water" },
+            { "formula": "Ca(OH)₂", "atoms": {"Ca": 1, "O": 2, "H": 2}, "side": "rhs", "name": "Calcium Hydroxide" }
+        ],
+        "solution": [1, 1, 1]
+    },
+    {
+        "title": "Thermal Decomposition of Ferrous Sulphate",
+        "type": "Thermal Decomposition",
+        "definition": "A reaction in which a single reactant breaks down into simpler products when heated.",
+        "bullets": [
+            "Hydrated Ferrous Sulphate (FeSO₄·7H₂O) is initially light green. On heating, it first loses water.",
+            "Anhydrous Ferrous Sulphate (FeSO₄) is white.",
+            "On further heating, it decomposes to form a reddish-brown solid (Ferric Oxide).",
+            "Gases with the characteristic smell of burning sulphur (SO₂ and SO₃) are evolved."
+        ],
+        "parts": [
+            { "formula": "FeSO₄", "atoms": {"Fe": 1, "S": 1, "O": 4}, "side": "lhs", "name": "Ferrous Sulphate" },
+            { "formula": "Fe₂O₃", "atoms": {"Fe": 2, "O": 3}, "side": "rhs", "name": "Ferric Oxide" },
+            { "formula": "SO₂", "atoms": {"S": 1, "O": 2}, "side": "rhs", "name": "Sulphur Dioxide" },
+            { "formula": "SO₃", "atoms": {"S": 1, "O": 3}, "side": "rhs", "name": "Sulphur Trioxide" }
+        ],
+        "solution": [2, 1, 1, 1]
+    },
+    {
+        "title": "Thermal Decomposition of Calcium Carbonate",
+        "type": "Thermal Decomposition, Endothermic Reaction",
+        "definition": "A reaction in which a single reactant breaks down into simpler products when heated.",
+        "bullets": [
+            "Calcium Carbonate (Limestone) is a white solid.",
+            "On strong heating, it decomposes to form Calcium Oxide (Quicklime) and Carbon Dioxide gas.",
+            "This reaction is a key step in the manufacturing of cement."
+        ],
+        "parts": [
+            { "formula": "CaCO₃", "atoms": {"Ca": 1, "C": 1, "O": 3}, "side": "lhs", "name": "Calcium Carbonate" },
+            { "formula": "CaO", "atoms": {"Ca": 1, "O": 1}, "side": "rhs", "name": "Calcium Oxide" },
+            { "formula": "CO₂", "atoms": {"C": 1, "O": 2}, "side": "rhs", "name": "Carbon Dioxide" }
+        ],
+        "solution": [1, 1, 1]
+    },
+    {
+        "title": "Thermal Decomposition of Lead Nitrate",
+        "type": "Thermal Decomposition",
+        "definition": "A reaction in which a single reactant breaks down into simpler products when heated.",
+        "bullets": [
+            "Lead Nitrate is a white crystalline solid.",
+            "On heating, it produces a crackling sound.",
+            "It decomposes to form a yellow solid residue (Lead Oxide).",
+            "Brown fumes of Nitrogen Dioxide (NO₂) gas are evolved, along with colorless Oxygen (O₂) gas."
+        ],
+        "parts": [
+            { "formula": "Pb(NO₃)₂", "atoms": {"Pb": 1, "N": 2, "O": 6}, "side": "lhs", "name": "Lead(II) Nitrate" },
+            { "formula": "PbO", "atoms": {"Pb": 1, "O": 1}, "side": "rhs", "name": "Lead(II) Oxide" },
+            { "formula": "NO₂", "atoms": {"N": 1, "O": 2}, "side": "rhs", "name": "Nitrogen Dioxide" },
+            { "formula": "O₂", "atoms": {"O": 2}, "side": "rhs", "name": "Oxygen" }
+        ],
+        "solution": [2, 2, 4, 1]
+    },
+    {
+        "title": "Electrolysis of Water",
+        "type": "Electrolytic Decomposition",
+        "definition": "A reaction where a compound is decomposed by passing an electric current through it.",
+        "bullets": [
+            "Pure water is a poor conductor; a few drops of acid are added to make it conduct electricity.",
+            "Hydrogen gas is collected at the cathode (negative electrode).",
+            "Oxygen gas is collected at the anode (positive electrode).",
+            "The volume of Hydrogen gas produced is double the volume of Oxygen gas."
+        ],
+        "parts": [
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "lhs", "name": "Water" },
+            { "formula": "H₂", "atoms": {"H": 2}, "side": "rhs", "name": "Hydrogen Gas" },
+            { "formula": "O₂", "atoms": {"O": 2}, "side": "rhs", "name": "Oxygen Gas" }
+        ],
+        "solution": [2, 2, 1]
+    },
+    {
+        "title": "Displacement of Copper by Iron",
+        "type": "Displacement Reaction",
+        "definition": "A reaction in which a more reactive element displaces a less reactive element from its compound.",
+        "bullets": [
+            "An iron nail is placed in a blue solution of Copper Sulphate.",
+            "The blue color of the solution fades and turns light green.",
+            "A reddish-brown coating of Copper metal is deposited on the iron nail.",
+            "Iron is more reactive than Copper."
+        ],
+        "parts": [
+            { "formula": "Fe", "atoms": {"Fe": 1}, "side": "lhs", "name": "Iron" },
+            { "formula": "CuSO₄", "atoms": {"Cu": 1, "S": 1, "O": 4}, "side": "lhs", "name": "Copper(II) Sulphate" },
+            { "formula": "FeSO₄", "atoms": {"Fe": 1, "S": 1, "O": 4}, "side": "rhs", "name": "Iron(II) Sulphate" },
+            { "formula": "Cu", "atoms": {"Cu": 1}, "side": "rhs", "name": "Copper" }
+        ],
+        "solution": [1, 1, 1, 1]
+    },
+    {
+        "title": "Respiration",
+        "type": "Redox Reaction, Exothermic Reaction, Combustion",
+        "definition": "A process in living organisms involving the production of energy, typically with the intake of oxygen and the release of carbon dioxide.",
+        "bullets": [
+            "Glucose (from food) combines with Oxygen (from breathing).",
+            "Energy is released, which is used for various life processes.",
+            "Carbon Dioxide and Water are the waste products.",
+            "This reaction takes place inside the mitochondria of cells."
+        ],
+        "parts": [
+            { "formula": "C₆H₁₂O₆", "atoms": {"C": 6, "H": 12, "O": 6}, "side": "lhs", "name": "Glucose" },
+            { "formula": "O₂", "atoms": {"O": 2}, "side": "lhs", "name": "Oxygen" },
+            { "formula": "CO₂", "atoms": {"C": 1, "O": 2}, "side": "rhs", "name": "Carbon Dioxide" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 6, 6, 6]
+    },
+    {
+        "title": "Acid-Base Neutralization",
+        "type": "Neutralization, Double Displacement",
+        "definition": "A reaction between an acid and a base to form salt and water.",
+        "bullets": [
+            "An acid (like HCl) reacts with a base (like NaOH).",
+            "The acidic and basic properties are destroyed (neutralized).",
+            "A neutral salt (Sodium Chloride) and Water are formed.",
+            "The reaction is generally exothermic."
+        ],
+        "parts": [
+            { "formula": "HCl", "atoms": {"H": 1, "Cl": 1}, "side": "lhs", "name": "Hydrochloric Acid" },
+            { "formula": "NaOH", "atoms": {"Na": 1, "O": 1, "H": 1}, "side": "lhs", "name": "Sodium Hydroxide" },
+            { "formula": "NaCl", "atoms": {"Na": 1, "Cl": 1}, "side": "rhs", "name": "Sodium Chloride" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 1, 1, 1]
+    },
+    {
+        "title": "Reaction of Acid with a Metal Carbonate",
+        "type": "Gas Evolution Reaction",
+        "definition": "A reaction that produces a gas as one of its products.",
+        "bullets": [
+            "Acids react with metal carbonates to produce a salt, water, and carbon dioxide.",
+            "Brisk effervescence (fizzing) is observed due to the evolution of CO₂ gas.",
+            "The CO₂ gas turns limewater (Ca(OH)₂) milky."
+        ],
+        "parts": [
+            { "formula": "Na₂CO₃", "atoms": {"Na": 2, "C": 1, "O": 3}, "side": "lhs", "name": "Sodium Carbonate" },
+            { "formula": "HCl", "atoms": {"H": 1, "Cl": 1}, "side": "lhs", "name": "Hydrochloric Acid" },
+            { "formula": "NaCl", "atoms": {"Na": 1, "Cl": 1}, "side": "rhs", "name": "Sodium Chloride" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" },
+            { "formula": "CO₂", "atoms": {"C": 1, "O": 2}, "side": "rhs", "name": "Carbon Dioxide" }
+        ],
+        "solution": [1, 2, 2, 1, 1]
+    },
+    {
+        "title": "The Chlor-alkali Process",
+        "type": "Electrolytic Decomposition",
+        "definition": "A reaction where a compound is decomposed by passing an electric current through it.",
+        "bullets": [
+            "An electric current is passed through an aqueous solution of NaCl (brine).",
+            "It decomposes to form Sodium Hydroxide (an alkali).",
+            "Chlorine gas is formed at the anode.",
+            "Hydrogen gas is formed at the cathode."
+        ],
+        "parts": [
+            { "formula": "NaCl", "atoms": {"Na": 1, "Cl": 1}, "side": "lhs", "name": "Sodium Chloride" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "lhs", "name": "Water" },
+            { "formula": "NaOH", "atoms": {"Na": 1, "O": 1, "H": 1}, "side": "rhs", "name": "Sodium Hydroxide" },
+            { "formula": "Cl₂", "atoms": {"Cl": 2}, "side": "rhs", "name": "Chlorine Gas" },
+            { "formula": "H₂", "atoms": {"H": 2}, "side": "rhs", "name": "Hydrogen Gas" }
+        ],
+        "solution": [2, 2, 2, 1, 1]
+    },
+    {
+        "title": "Preparation of Plaster of Paris (POP)",
+        "type": "Thermal Decomposition",
+        "definition": "A reaction in which a single reactant breaks down into simpler products when heated.",
+        "bullets": [
+            "Gypsum (Calcium Sulphate Dihydrate) is heated carefully at 373 K (100°C).",
+            "It loses one and a half molecules of water of crystallization.",
+            "The product is Plaster of Paris (Calcium Sulphate Hemihydrate).",
+            "If heated above 373 K, all water is lost, and 'dead burnt plaster' is formed."
+        ],
+        "parts": [
+            { "formula": "CaSO₄·2H₂O", "atoms": {"Ca": 1, "S": 1, "O": 6, "H": 4}, "side": "lhs", "name": "Gypsum" },
+            { "formula": "CaSO₄·½H₂O", "atoms": {"Ca": 1, "S": 1, "O": 4.5, "H": 1}, "side": "rhs", "name": "Plaster of Paris" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 1, 1.5]
+    },
+    {
+        "title": "Reaction of Iron with Steam",
+        "type": "Displacement Reaction, Redox Reaction",
+        "definition": "A reaction in which a more reactive element displaces a less reactive element from its compound.",
+        "bullets": [
+            "Iron does not react with cold or hot water.",
+            "It reacts with steam to form Iron (II, III) Oxide (also called magnetite).",
+            "Hydrogen gas is also produced.",
+            "The reaction is reversible."
+        ],
+        "parts": [
+            { "formula": "Fe", "atoms": {"Fe": 1}, "side": "lhs", "name": "Iron" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "lhs", "name": "Water (Steam)" },
+            { "formula": "Fe₃O₄", "atoms": {"Fe": 3, "O": 4}, "side": "rhs", "name": "Iron(II,III) Oxide" },
+            { "formula": "H₂", "atoms": {"H": 2}, "side": "rhs", "name": "Hydrogen Gas" }
+        ],
+        "solution": [3, 4, 1, 4]
+    },
+    {
+        "title": "The Thermite Reaction",
+        "type": "Displacement Reaction, Redox Reaction, Exothermic Reaction",
+        "definition": "A reaction in which a more reactive element displaces a less reactive element from its compound.",
+        "bullets": [
+            "Aluminium is more reactive than Iron.",
+            "Aluminium powder displaces Iron from Iron(III) Oxide.",
+            "The reaction is highly exothermic, producing molten Iron.",
+            "This reaction is used to join railway tracks or cracked machine parts."
+        ],
+        "parts": [
+            { "formula": "Fe₂O₃", "atoms": {"Fe": 2, "O": 3}, "side": "lhs", "name": "Iron(III) Oxide" },
+            { "formula": "Al", "atoms": {"Al": 1}, "side": "lhs", "name": "Aluminium" },
+            { "formula": "Al₂O₃", "atoms": {"Al": 2, "O": 3}, "side": "rhs", "name": "Aluminium Oxide" },
+            { "formula": "Fe", "atoms": {"Fe": 1}, "side": "rhs", "name": "Iron" }
+        ],
+        "solution": [1, 2, 1, 2]
+    },
+    {
+        "title": "Combustion of Methane",
+        "type": "Combustion, Redox Reaction, Exothermic Reaction",
+        "definition": "A rapid reaction between a substance with an oxidant, usually oxygen, to produce heat and light.",
+        "bullets": [
+            "Methane (natural gas) is a saturated hydrocarbon.",
+            "It burns in oxygen with a clean, blue flame.",
+            "The products are Carbon Dioxide and Water.",
+            "A large amount of heat and light is produced."
+        ],
+        "parts": [
+            { "formula": "CH₄", "atoms": {"C": 1, "H": 4}, "side": "lhs", "name": "Methane" },
+            { "formula": "O₂", "atoms": {"O": 2}, "side": "lhs", "name": "Oxygen" },
+            { "formula": "CO₂", "atoms": {"C": 1, "O": 2}, "side": "rhs", "name": "Carbon Dioxide" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 2, 1, 2]
+    },
+    {
+        "title": "Hydrogenation of Ethene",
+        "type": "Addition Reaction",
+        "definition": "A reaction in which atoms are added across a double or triple bond in an unsaturated compound.",
+        "bullets": [
+            "Ethene is an unsaturated hydrocarbon (contains a C=C double bond).",
+            "Hydrogen is added across the double bond in the presence of a catalyst like Nickel or Palladium.",
+            "The product is Ethane, a saturated hydrocarbon (contains only C-C single bonds).",
+            "This process is used to convert unsaturated vegetable oils into saturated fats (vanaspati ghee)."
+        ],
+        "parts": [
+            { "formula": "CH₂=CH₂", "atoms": {"C": 2, "H": 4}, "side": "lhs", "name": "Ethene" },
+            { "formula": "H₂", "atoms": {"H": 2}, "side": "lhs", "name": "Hydrogen" },
+            { "formula": "CH₃-CH₃", "atoms": {"C": 2, "H": 6}, "side": "rhs", "name": "Ethane" }
+        ],
+        "solution": [1, 1, 1]
+    },
+    {
+        "title": "Esterification Reaction",
+        "type": "Esterification",
+        "definition": "A reaction between a carboxylic acid and an alcohol to form an ester and water, typically in the presence of an acid catalyst.",
+        "bullets": [
+            "Ethanoic acid reacts with absolute ethanol.",
+            "A few drops of concentrated sulphuric acid act as a catalyst and a dehydrating agent.",
+            "A sweet-smelling substance called an ester (Ethyl ethanoate) is formed.",
+            "The reaction is reversible."
+        ],
+        "parts": [
+            { "formula": "CH₃COOH", "atoms": {"C": 2, "H": 4, "O": 2}, "side": "lhs", "name": "Ethanoic Acid" },
+            { "formula": "C₂H₅OH", "atoms": {"C": 2, "H": 6, "O": 1}, "side": "lhs", "name": "Ethanol" },
+            { "formula": "CH₃COOC₂H₅", "atoms": {"C": 4, "H": 8, "O": 2}, "side": "rhs", "name": "Ethyl Ethanoate (Ester)" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 1, 1, 1]
+    },
+    {
+        "title": "Saponification Reaction",
+        "type": "Saponification",
+        "definition": "The hydrolysis of an ester with a base (like NaOH) to produce an alcohol and the sodium salt of the carboxylic acid (soap).",
+        "bullets": [
+            "An ester (like Ethyl ethanoate) is treated with a base (Sodium Hydroxide).",
+            "The reaction is the reverse of esterification.",
+            "It breaks the ester back into the parent alcohol (Ethanol) and the sodium salt of the parent acid (Sodium ethanoate).",
+            "This process is used to make soap from fats and oils (which are esters)."
+        ],
+        "parts": [
+            { "formula": "CH₃COOC₂H₅", "atoms": {"C": 4, "H": 8, "O": 2}, "side": "lhs", "name": "Ethyl Ethanoate (Ester)" },
+            { "formula": "NaOH", "atoms": {"Na": 1, "O": 1, "H": 1}, "side": "lhs", "name": "Sodium Hydroxide" },
+            { "formula": "C₂H₅OH", "atoms": {"C": 2, "H": 6, "O": 1}, "side": "rhs", "name": "Ethanol" },
+            { "formula": "CH₃COONa", "atoms": {"C": 2, "H": 3, "O": 2, "Na": 1}, "side": "rhs", "name": "Sodium Ethanoate (Soap)" }
+        ],
+        "solution": [1, 1, 1, 1]
+    },
+    {
+        "title": "Photosynthesis",
+        "type": "Endothermic Reaction, Photochemical Reaction, Redox",
+        "definition": "The process by which green plants and some other organisms use sunlight to synthesize foods with the help of chlorophyll pigment.",
+        "bullets": [
+            "This reaction is the basis of life on Earth.",
+            "Sunlight energy is absorbed by chlorophyll and converted into chemical energy.",
+            "Carbon Dioxide is reduced to form Glucose (a carbohydrate).",
+            "Water is oxidized to release Oxygen gas as a byproduct."
+        ],
+        "parts": [
+            { "formula": "CO₂", "atoms": {"C": 1, "O": 2}, "side": "lhs", "name": "Carbon Dioxide" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "lhs", "name": "Water" },
+            { "formula": "C₆H₁₂O₆", "atoms": {"C": 6, "H": 12, "O": 6}, "side": "rhs", "name": "Glucose" },
+            { "formula": "O₂", "atoms": {"O": 2}, "side": "rhs", "name": "Oxygen" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [6, 12, 1, 6, 6]
+    },
+    {
+        "title": "Photolytic Decomposition of Silver Bromide",
+        "type": "Photolytic Decomposition",
+        "definition": "A reaction where a compound is decomposed by light energy.",
+        "bullets": [
+            "Silver Bromide is a pale yellow solid.",
+            "When exposed to sunlight, it decomposes into Silver metal and Bromine gas.",
+            "The Silver metal formed is grey.",
+            "This reaction is used in black-and-white photography."
+        ],
+        "parts": [
+            { "formula": "AgBr", "atoms": {"Ag": 1, "Br": 1}, "side": "lhs", "name": "Silver Bromide" },
+            { "formula": "Ag", "atoms": {"Ag": 1}, "side": "rhs", "name": "Silver" },
+            { "formula": "Br₂", "atoms": {"Br": 2}, "side": "rhs", "name": "Bromine" }
+        ],
+        "solution": [2, 2, 1]
+    },
+    {
+        "title": "Reaction of Sodium Hydroxide with Zinc",
+        "type": "Gas Evolution Reaction",
+        "definition": "A reaction that produces a gas as one of its products.",
+        "bullets": [
+            "Zinc is an amphoteric metal, meaning it reacts with both acids and strong bases.",
+            "When zinc granules are heated with Sodium Hydroxide solution, a salt and hydrogen gas are formed.",
+            "The salt formed is Sodium Zincate.",
+            "Hydrogen gas is evolved, which can be tested with a burning splint (pop sound)."
+        ],
+        "parts": [
+            { "formula": "Zn", "atoms": {"Zn": 1}, "side": "lhs", "name": "Zinc" },
+            { "formula": "NaOH", "atoms": {"Na": 1, "O": 1, "H": 1}, "side": "lhs", "name": "Sodium Hydroxide" },
+            { "formula": "Na₂ZnO₂", "atoms": {"Na": 2, "Zn": 1, "O": 2}, "side": "rhs", "name": "Sodium Zincate" },
+            { "formula": "H₂", "atoms": {"H": 2}, "side": "rhs", "name": "Hydrogen Gas" }
+        ],
+        "solution": [1, 2, 1, 1]
+    },
+    {
+        "title": "Reaction of Acid with a Metal Oxide",
+        "type": "Neutralization-like Reaction",
+        "definition": "A reaction between an acid and a basic metal oxide to form salt and water.",
+        "bullets": [
+            "Metal oxides are generally basic in nature.",
+            "Copper(II) Oxide is a black solid.",
+            "It reacts with a dilute acid like HCl to form a salt (Copper Chloride) and water.",
+            "The black solid dissolves and the solution turns bluish-green due to the formation of Cu²⁺ ions."
+        ],
+        "parts": [
+            { "formula": "CuO", "atoms": {"Cu": 1, "O": 1}, "side": "lhs", "name": "Copper(II) Oxide" },
+            { "formula": "HCl", "atoms": {"H": 1, "Cl": 1}, "side": "lhs", "name": "Hydrochloric Acid" },
+            { "formula": "CuCl₂", "atoms": {"Cu": 1, "Cl": 2}, "side": "rhs", "name": "Copper(II) Chloride" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 2, 1, 1]
+    },
+    {
+        "title": "Reaction of Base with a Non-metallic Oxide",
+        "type": "Neutralization-like Reaction",
+        "definition": "A reaction between a base and an acidic non-metallic oxide to form salt and water.",
+        "bullets": [
+            "Non-metallic oxides are generally acidic in nature.",
+            "Carbon Dioxide (a non-metallic oxide) reacts with Calcium Hydroxide (a base).",
+            "This forms a salt (Calcium Carbonate) and water.",
+            "The formation of the white precipitate of Calcium Carbonate makes the solution 'milky'."
+        ],
+        "parts": [
+            { "formula": "Ca(OH)₂", "atoms": {"Ca": 1, "O": 2, "H": 2}, "side": "lhs", "name": "Calcium Hydroxide" },
+            { "formula": "CO₂", "atoms": {"C": 1, "O": 2}, "side": "lhs", "name": "Carbon Dioxide" },
+            { "formula": "CaCO₃", "atoms": {"Ca": 1, "C": 1, "O": 3}, "side": "rhs", "name": "Calcium Carbonate" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 1, 1, 1]
+    },
+    {
+        "title": "Formation of Bleaching Powder",
+        "type": "Combination Reaction",
+        "definition": "A reaction in which a single product is formed from two or more reactants.",
+        "bullets": [
+            "This reaction is used for the industrial preparation of Bleaching Powder.",
+            "Chlorine gas (obtained from the chlor-alkali process) is passed over dry Slaked Lime.",
+            "The product is Calcium Oxychloride, commonly known as Bleaching Powder."
+        ],
+        "parts": [
+            { "formula": "Ca(OH)₂", "atoms": {"Ca": 1, "O": 2, "H": 2}, "side": "lhs", "name": "Calcium Hydroxide" },
+            { "formula": "Cl₂", "atoms": {"Cl": 2}, "side": "lhs", "name": "Chlorine Gas" },
+            { "formula": "CaOCl₂", "atoms": {"Ca": 1, "O": 1, "Cl": 2}, "side": "rhs", "name": "Calcium Oxychloride" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 1, 1, 1]
+    },
+    {
+        "title": "Heating of Baking Soda",
+        "type": "Thermal Decomposition",
+        "definition": "A reaction in which a single reactant breaks down into simpler products when heated.",
+        "bullets": [
+            "Sodium Hydrogen Carbonate (Baking Soda) is used in baking cakes and bread.",
+            "When heated, it decomposes to form Sodium Carbonate, water, and Carbon Dioxide.",
+            "The Carbon Dioxide gas produced causes the dough to rise and become soft and spongy."
+        ],
+
+        "parts": [
+            { "formula": "NaHCO₃", "atoms": {"Na": 1, "H": 1, "C": 1, "O": 3}, "side": "lhs", "name": "Sodium Hydrogen Carbonate" },
+            { "formula": "Na₂CO₃", "atoms": {"Na": 2, "C": 1, "O": 3}, "side": "rhs", "name": "Sodium Carbonate" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" },
+            { "formula": "CO₂", "atoms": {"C": 1, "O": 2}, "side": "rhs", "name": "Carbon Dioxide" }
+        ],
+        "solution": [2, 1, 1, 1]
+    },
+    {
+        "title": "Setting of Plaster of Paris",
+        "type": "Hydration, Combination Reaction",
+        "definition": "A reaction where a substance combines with water.",
+        "bullets": [
+            "Plaster of Paris is a white powder.",
+            "When mixed with water, it sets into a hard, solid mass.",
+            "This is due to the reformation of Gypsum.",
+            "This property is used for setting fractured bones and making casts."
+        ],
+        "parts": [
+            { "formula": "CaSO₄·½H₂O", "atoms": {"Ca": 1, "S": 1, "O": 4.5, "H": 1}, "side": "lhs", "name": "Plaster of Paris" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "lhs", "name": "Water" },
+            { "formula": "CaSO₄·2H₂O", "atoms": {"Ca": 1, "S": 1, "O": 6, "H": 4}, "side": "rhs", "name": "Gypsum" }
+        ],
+        "solution": [1, 1.5, 1]
+    },
+    {
+        "title": "Reaction of Sodium with Ethanol",
+        "type": "Displacement Reaction",
+        "definition": "A reaction where an element displaces another element in a compound.",
+        "bullets": [
+            "Sodium is a very reactive metal.",
+            "It reacts with ethanol to displace the hydrogen from the hydroxyl (-OH) group.",
+            "The products are Sodium Ethoxide and Hydrogen gas.",
+            "Bubbles of hydrogen gas are observed."
+        ],
+        "parts": [
+            { "formula": "Na", "atoms": {"Na": 1}, "side": "lhs", "name": "Sodium" },
+            { "formula": "CH₃CH₂OH", "atoms": {"C": 2, "H": 6, "O": 1}, "side": "lhs", "name": "Ethanol" },
+            { "formula": "CH₃CH₂ONa", "atoms": {"C": 2, "H": 5, "O": 1, "Na": 1}, "side": "rhs", "name": "Sodium Ethoxide" },
+            { "formula": "H₂", "atoms": {"H": 2}, "side": "rhs", "name": "Hydrogen Gas" }
+        ],
+        "solution": [2, 2, 2, 1]
+    },
+    {
+        "title": "Dehydration of Ethanol",
+        "type": "Dehydration, Elimination Reaction",
+        "definition": "A reaction which involves the loss of a water molecule from the reacting molecule.",
+        "bullets": [
+            "Ethanol is heated with excess concentrated Sulphuric Acid at 443 K (170°C).",
+            "Concentrated H₂SO₄ acts as a dehydrating agent, removing a molecule of water from ethanol.",
+            "The product is Ethene, an unsaturated hydrocarbon.",
+            "This is a method for preparing alkenes from alcohols."
+        ],
+        "parts": [
+            { "formula": "CH₃CH₂OH", "atoms": {"C": 2, "H": 6, "O": 1}, "side": "lhs", "name": "Ethanol" },
+            { "formula": "CH₂=CH₂", "atoms": {"C": 2, "H": 4}, "side": "rhs", "name": "Ethene" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 1, 1]
+    },
+    {
+        "title": "Substitution Reaction of Methane with Chlorine",
+        "type": "Substitution Reaction",
+        "definition": "A reaction in which one or more hydrogen atoms of a hydrocarbon are replaced by some other atom or group.",
+        "bullets": [
+            "Saturated hydrocarbons (alkanes) are fairly unreactive.",
+            "In the presence of sunlight, they undergo substitution reactions with halogens.",
+            "A hydrogen atom of methane is replaced by a chlorine atom.",
+            "The reaction is a chain reaction and can continue to replace more hydrogen atoms."
+        ],
+        "parts": [
+            { "formula": "CH₄", "atoms": {"C": 1, "H": 4}, "side": "lhs", "name": "Methane" },
+            { "formula": "Cl₂", "atoms": {"Cl": 2}, "side": "lhs", "name": "Chlorine" },
+            { "formula": "CH₃Cl", "atoms": {"C": 1, "H": 3, "Cl": 1}, "side": "rhs", "name": "Chloromethane" },
+            { "formula": "HCl", "atoms": {"H": 1, "Cl": 1}, "side": "rhs", "name": "Hydrogen Chloride" }
+        ],
+        "solution": [1, 1, 1, 1]
+    },
+    {
+        "title": "Oxidation of Ethanol with Alkaline KMnO₄",
+        "type": "Oxidation",
+        "definition": "A process that involves the gain of oxygen or loss of hydrogen.",
+        "bullets": [
+            "Alkaline Potassium Permanganate (KMnO₄) is a strong oxidizing agent.",
+            "It adds oxygen to other substances.",
+            "When ethanol is heated with alkaline KMnO₄, it gets oxidized to Ethanoic Acid.",
+            "The purple color of the KMnO₄ solution disappears as it is consumed in the reaction."
+        ],
+        "parts": [
+            { "formula": "CH₃CH₂OH", "atoms": {"C": 2, "H": 6, "O": 1}, "side": "lhs", "name": "Ethanol" },
+            { "formula": "O", "atoms": {"O": 1}, "side": "lhs", "name": "Oxygen (from KMnO₄)" },
+            { "formula": "CH₃COOH", "atoms": {"C": 2, "H": 4, "O": 2}, "side": "rhs", "name": "Ethanoic Acid" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 2, 1, 1]
+    },
+    {
+        "title": "Reduction of Copper Oxide with Hydrogen",
+        "type": "Redox Reaction",
+        "definition": "A chemical reaction in which both oxidation and reduction occur simultaneously.",
+        "bullets": [
+            "This is the reverse of the oxidation of copper.",
+            "When hydrogen gas is passed over heated black Copper(II) Oxide, a reaction occurs.",
+            "The black coating turns brown as Copper(II) Oxide is reduced to Copper metal.",
+            "Hydrogen is oxidized to form Water.",
+            "CuO is the oxidizing agent; H₂ is the reducing agent."
+        ],
+        "parts": [
+            { "formula": "CuO", "atoms": {"Cu": 1, "O": 1}, "side": "lhs", "name": "Copper(II) Oxide" },
+            { "formula": "H₂", "atoms": {"H": 2}, "side": "lhs", "name": "Hydrogen" },
+            { "formula": "Cu", "atoms": {"Cu": 1}, "side": "rhs", "name": "Copper" },
+            { "formula": "H₂O", "atoms": {"H": 2, "O": 1}, "side": "rhs", "name": "Water" }
+        ],
+        "solution": [1, 1, 1, 1]
+    }
+];
+    let activeRxn = reactions[0];
+    const canvas = document.getElementById('chemCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function init() {
+        const list = document.getElementById('rxnList');
+        reactions.forEach((r, i) => {
+            const li = document.createElement('li');
+            li.className = 'rxn-item';
+            li.innerText = r.title;
+            li.onclick = () => selectRxn(i);
+            list.appendChild(li);
+        });
+        selectRxn(0);
+    }
+
+    function selectRxn(idx) {
+        activeRxn = reactions[idx];
+        document.getElementById('rxnTitle').innerText = activeRxn.title + " (" + activeRxn.type + ")";
+        document.getElementById('rxnDef').innerText = "Definition: " + activeRxn.definition;
+        
+        const bullets = document.getElementById('rxnBullets');
+        bullets.innerHTML = '';
+        activeRxn.bullets.forEach(b => {
+            const li = document.createElement('li');
+            li.innerText = b;
+            bullets.appendChild(li);
+        });
+
+        document.querySelectorAll('.rxn-item').forEach((el, i) => {
+            el.className = i === idx ? 'rxn-item active' : 'rxn-item';
+        });
+
+        renderEq();
+    }
+
+    function renderEq() {
+        const container = document.getElementById('eqContainer');
+        container.innerHTML = '';
+        const lhs = activeRxn.parts.filter(p => p.side === 'lhs');
+        const rhs = activeRxn.parts.filter(p => p.side === 'rhs');
+
+        const addMolecule = (mol) => {
+            const div = document.createElement('div');
+            div.innerHTML = `<input type="number" class="coeff-box" value="1" min="1" oninput="calculate()"> 
+                             <span>${mol.formula.replace(/(\d+)/g, '<sub>$1</sub>')}</span>`;
+            container.appendChild(div);
+        };
+
+        lhs.forEach((m, i) => {
+            addMolecule(m);
+            if (i < lhs.length - 1) container.innerHTML += '<span>+</span>';
+        });
+        container.innerHTML += '<span>&rarr;</span>';
+        rhs.forEach((m, i) => {
+            addMolecule(m);
+            if (i < rhs.length - 1) container.innerHTML += '<span>+</span>';
+        });
+
+        calculate();
+    }
+
+    function calculate() {
+        const inputs = document.querySelectorAll('.coeff-box');
+        const elSet = new Set();
+        activeRxn.parts.forEach(p => Object.keys(p.atoms).forEach(a => elSet.add(a)));
+
+        const results = { lhs: {}, rhs: {} };
+        elSet.forEach(e => { results.lhs[e] = { total: 0, steps: [] }; results.rhs[e] = { total: 0, steps: [] }; });
+
+        inputs.forEach((input, i) => {
+            const val = parseInt(input.value) || 0;
+            const part = activeRxn.parts[i];
+            for (let el in part.atoms) {
+                const sub = part.atoms[el];
+                results[part.side][el].total += (val * sub);
+                results[part.side][el].steps.push(`${val} × ${sub}`);
+            }
+        });
+
+        const tbody = document.getElementById('inventoryTable');
+        tbody.innerHTML = '';
+        elSet.forEach(el => {
+            const l = results.lhs[el];
+            const r = results.rhs[el];
+            const isMatch = l.total === r.total;
+            tbody.innerHTML += `
+                <tr class="${isMatch ? 'balanced' : 'unbalanced'}">
+                    <td><strong>${el}</strong></td>
+                    <td>${l.steps.join(' + ')} = ${l.total}</td>
+                    <td>${isMatch ? '✔ Balanced' : '✖ Unbalanced'}</td>
+                    <td>${r.steps.join(' + ')} = ${r.total}</td>
+                </tr>`;
+        });
+
+        drawDiagram(inputs);
+    }
+function drawDiagram(inputs) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const colors = { H: '#e2e8f0', O: '#ef4444', C: '#1e293b', Fe: '#94a3b8', Na: '#a855f7', S: '#fbbf24', Cl: '#4ade80' };
+    
+    let xPos = 40; // Starting point
+    const atomRadius = 15;
+    const atomPadding = 10; // Space between atoms in a molecule
+
+    inputs.forEach((input, i) => {
+        const coeff = parseInt(input.value) || 0;
+        const part = activeRxn.parts[i];
+        
+        // --- 1. Calculate how wide this specific molecule is ---
+        const totalAtomsInOneMol = Object.values(part.atoms).reduce((a, b) => a + b, 0);
+        // Width = (number of atoms * diameter) + padding
+        const molWidth = (totalAtomsInOneMol * (atomRadius * 2)) - 10; 
+        
+        // --- 2. Draw the molecules (stacking them slightly) ---
+        // We limit visual drawing to 4 molecules so it doesn't fill the whole screen
+        const visualCoeff = Math.min(coeff, 4); 
+        
+        for (let c = 0; c < visualCoeff; c++) {
+            // Stack molecules slightly downwards and to the right
+            let molX = xPos + (c * 12); 
+            let molY = 80 + (c * 45); 
+
+            let atomXOffset = 0;
+            Object.keys(part.atoms).forEach(el => {
+                for(let n=0; n < part.atoms[el]; n++) {
+                    const centerX = molX + atomXOffset;
+                    const centerY = molY;
+                    
+                    // 3D Sphere Effect
+                    const grad = ctx.createRadialGradient(centerX-5, centerY-5, 2, centerX, centerY, atomRadius);
+                    grad.addColorStop(0, '#fff');
+                    grad.addColorStop(1, colors[el] || '#000');
+                    
+                    ctx.beginPath();
+                    ctx.arc(centerX, centerY, atomRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                    ctx.strokeStyle = '#334155';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                    
+                    // Atom Label
+                    ctx.fillStyle = (el === 'C' || el === 'Fe') ? '#fff' : '#000';
+                    ctx.font = "bold 11px Arial";
+                    ctx.textAlign = "center";
+                    ctx.fillText(el, centerX, centerY + 4);
+                    
+                    atomXOffset += (atomRadius * 2) + 2; // Move right for next atom in molecule
+                }
+            });
+        }
+
+        // --- 3. Position the Symbol (+ or →) ---
+        let nextPart = activeRxn.parts[i+1];
+        if (nextPart) {
+            const isCrossingSide = (part.side !== nextPart.side);
+            const symbol = isCrossingSide ? "→" : "+";
+            
+            // The gap depends on the width of the molecule we just drew
+            // We add extra space (80 or 150) so the symbol has room
+            const gapToNext = isCrossingSide ? 180 : 110; 
+            
+            ctx.fillStyle = "#1e293b";
+            ctx.font = "bold 30px Arial";
+            ctx.textAlign = "center";
+            
+            // Place symbol between current xPos end and next xPos start
+            const symbolX = xPos + molWidth + (gapToNext / 2);
+            ctx.fillText(symbol, symbolX, 140);
+            
+            // Move xPos forward for the next molecule species
+            xPos += molWidth + gapToNext;
+        }
+    });
+}
+    function autoSolve() {
+        const inputs = document.querySelectorAll('.coeff-box');
+        activeRxn.solution.forEach((v, i) => inputs[i].value = v);
+        calculate();
+    }
+
+    window.onload = () => {
+        canvas.width = canvas.offsetWidth;
+        canvas.height = canvas.offsetHeight;
+        init();
+    };
+</script>
+</body>
+</html>

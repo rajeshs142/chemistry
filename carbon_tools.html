@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carbon & Its Compounds</title>
+    <style>
+        :root {
+            --bg-color: #f0f2f5;
+            --main-bg: #ffffff;
+            --header-bg: #1e2a3a;
+            --text-color: #333;
+            --accent-color: #007bff;
+            --accent-hover: #0056b3;
+            --border-color: #d9e1e8;
+            --correct-bg: #d4edda;
+            --correct-border: #c3e6cb;
+            --correct-text: #155724;
+            --incorrect-bg: #f8d7da;
+            --incorrect-border: #f5c6cb;
+            --incorrect-text: #721c24;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+        .header {
+            background-color: var(--header-bg);
+            color: #fff;
+            padding: 20px 40px;
+            text-align: center;
+        }
+        .header h1 { font-size: 2rem; }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .tool-section {
+            background-color: var(--main-bg);
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            border: 1px solid var(--border-color);
+        }
+        .tool-section h2 {
+            font-size: 1.8rem;
+            color: var(--header-bg);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+            margin-bottom: 25px;
+        }
+        
+        /* --- Tool 1: Hydrocarbon Naming Machine --- */
+        .naming-machine .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .naming-machine label {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-right: 15px;
+        }
+        .naming-machine input[type="number"] {
+            padding: 10px;
+            font-size: 1.2rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 80px;
+            text-align: center;
+        }
+        .naming-machine .results-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .naming-machine .result-card {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .naming-machine .result-card h3 {
+            font-size: 1.5rem;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+        }
+        .naming-machine .result-card p {
+            font-size: 1.1rem;
+            margin: 8px 0;
+        }
+        .naming-machine .result-card .formula, .naming-machine .result-card .structure-text {
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        .naming-machine .result-card .name {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--header-bg);
+        }
+        .naming-machine .disabled-card {
+            background-color: #e9ecef;
+            opacity: 0.6;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+        }
+
+        /* --- Tool 2: Functional Group Match-Up --- */
+        .fg-matcher-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-start;
+            padding: 20px 0;
+        }
+        .fg-column {
+            width: 45%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .fg-column h3 {
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 1.4rem;
+        }
+        .draggable {
+            background-color: #e7f3ff;
+            border: 2px dashed var(--accent-color);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            cursor: grab;
+        }
+        .draggable:active {
+            cursor: grabbing;
+        }
+        .droptarget {
+            background-color: #f8f9fa;
+            border: 1px solid var(--border-color);
+            padding: 11px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            /* min-height: 60px; */
+        }
+        .droptarget.drag-over {
+            background-color: #d4edda;
+            border-color: #155724;
+        }
+        .droptarget .name {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+        .droptarget .placeholder {
+            width: 120px;
+            height: 30px;
+            border: 2px dashed #ced4da;
+            border-radius: 6px;
+        }
+        .droptarget.correct {
+            background-color: var(--correct-bg);
+            border-color: var(--correct-border);
+        }
+        .droptarget.correct .draggable {
+            border: 2px solid var(--correct-text);
+            cursor: default;
+        }
+        .fg-matcher-controls {
+            text-align: center;
+            margin-top: 25px;
+        }
+        .reset-btn {
+            padding: 10px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            background-color: var(--accent-hover);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Carbon & Its Compounds</h1>
+    </div>
+
+    <div class="container">
+        <div class="tool-section">
+            <h2>Hydrocarbon Naming Machine</h2>
+            <div class="naming-machine">
+                <div class="controls">
+                    <label for="carbon-input">Number of Carbon Atoms:</label>
+                    <input type="number" id="carbon-input" min="1" max="10" value="3">
+                </div>
+                <div class="results-container">
+                    <!-- Results will be generated here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="tool-section">
+            <h2>Functional Group Match-Up</h2>
+            <div class="fg-matcher-container">
+                <!-- Columns will be generated here by JavaScript -->
+            </div>
+            <div class="fg-matcher-controls">
+                <button id="reset-matcher-btn" class="reset-btn">Reset Match-Up</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // --- Data ---
+    const hydrocarbonData = {
+        prefixes: ['', 'meth', 'eth', 'prop', 'but', 'pent', 'hex', 'hept', 'oct', 'non', 'dec'],
+        families: {
+            alkane: { name: 'Alkane', suffix: 'ane', formula: n => `C${n}H${2*n+2}` },
+            alkene: { name: 'Alkene', suffix: 'ene', formula: n => `C${n}H${2*n}` },
+            alkyne: { name: 'Alkyne', suffix: 'yne', formula: n => `C${n}H${2*n-2}` }
+        }
+    };
+const functionalGroupsData = [
+    // Basic functional groups (Class 10 level)
+    { name: 'Alcohol', structure: '-OH', prefix: 'hydroxy', suffix: 'ol', example: 'CH₃CH₂OH (Ethanol)', iupacExample: 'Ethanol' },
+    { name: 'Aldehyde', structure: '-CHO', prefix: 'oxo', suffix: 'al', example: 'HCHO (Formaldehyde)', iupacExample: 'Methanal' },
+    { name: 'Ketone', structure: '-CO-', prefix: 'oxo', suffix: 'one', example: 'CH₃COCH₃ (Acetone)', iupacExample: 'Propanone' },
+    { name: 'Carboxylic Acid', structure: '-COOH', prefix: 'carboxy', suffix: 'oic acid', example: 'CH₃COOH (Acetic acid)', iupacExample: 'Ethanoic acid' },
+    { name: 'Halo (Chloro)', structure: '-Cl', prefix: 'chloro', suffix: '', example: 'CH₃Cl (Chloromethane)', iupacExample: 'Chloromethane' },
+    { name: 'Halo (Bromo)', structure: '-Br', prefix: 'bromo', suffix: '', example: 'CH₃Br (Bromomethane)', iupacExample: 'Bromomethane' },    
+    // Additional important functional groups (for extended knowledge)
+    { name: 'Alkene', structure: 'C=C', prefix: '', suffix: 'ene', example: 'CH₂=CH₂ (Ethene)', iupacExample: 'Ethene' },
+    { name: 'Alkyne', structure: 'C≡C', prefix: '', suffix: 'yne', example: 'CH≡CH (Ethyne)', iupacExample: 'Ethyne' },
+    { name: 'Alkane', structure: 'C-C (single bonds)', prefix: '', suffix: 'ane', example: 'CH₃-CH₃ (Ethane)', iupacExample: 'Ethane' },
+];
+
+    // --- Tool 1: Hydrocarbon Naming Machine ---
+    const carbonInput = document.getElementById('carbon-input');
+    const resultsContainer = document.querySelector('.naming-machine .results-container');
+
+    const updateNamingMachine = () => {
+        resultsContainer.innerHTML = '';
+        let n = parseInt(carbonInput.value);
+        if (isNaN(n) || n < 1) n = 1;
+        if (n > 10) n = 10;
+        
+        ['alkane', 'alkene', 'alkyne'].forEach(familyKey => {
+            const card = document.createElement('div');
+            card.classList.add('result-card');
+            
+            const familyInfo = hydrocarbonData.families[familyKey];
+            const h3 = document.createElement('h3');
+            h3.textContent = familyInfo.name;
+            card.appendChild(h3);
+
+            if ((familyKey === 'alkene' || familyKey === 'alkyne') && n === 1) {
+                card.innerHTML += `<p>(Does not exist for 1 Carbon)</p>`;
+                card.classList.add('disabled-card');
+            } else {
+                const prefix = hydrocarbonData.prefixes[n];
+                const name = prefix + familyInfo.suffix;
+                const formula = familyInfo.formula(n).replace(/1(?=[A-Z])/g, '').replace(/(\d+)/g, '<sub>$1</sub>');
+
+                // Simple structure generation
+                let structureText = '';
+                if (familyKey === 'alkane') {
+                    structureText = n === 1 ? 'CH₄' : `CH₃-${'(CH₂)'.repeat(n-2)}-CH₃`;
+                } else if (familyKey === 'alkene') {
+                    structureText = 'CH₂=CH' + (n > 2 ? `-${'(CH₂)'.repeat(n-3)}-CH₃` : '');
+                } else {
+                    structureText = 'CH≡C' + (n > 2 ? `-${'(CH₂)'.repeat(n-3)}-CH₃` : '');
+                }
+
+                card.innerHTML += `
+                    <p class="name">${name.charAt(0).toUpperCase() + name.slice(1)}</p>
+                    <p>Formula: <span class="formula">${formula}</span></p>
+                    <p>Structure: <span class="structure-text">${structureText}</span></p>
+                `;
+            }
+            resultsContainer.appendChild(card);
+        });
+    };
+
+    carbonInput.addEventListener('input', updateNamingMachine);
+    updateNamingMachine(); // Initial call
+
+    // --- Tool 2: Functional Group Match-Up ---
+    const matcherContainer = document.querySelector('.fg-matcher-container');
+    const resetMatcherBtn = document.getElementById('reset-matcher-btn');
+
+    // Helper function to shuffle an array
+    const shuffleArray = (array) => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    };
+
+    const setupMatcher = () => {
+        matcherContainer.innerHTML = '';
+        let correctMatches = 0;
+
+        const namesCol = document.createElement('div');
+        namesCol.className = 'fg-column';
+        namesCol.innerHTML = '<h3>Group Name</h3>';
+        
+        const structuresCol = document.createElement('div');
+        structuresCol.className = 'fg-column';
+        structuresCol.innerHTML = '<h3>Structure</h3>';
+
+        const shuffledNames = shuffleArray([...functionalGroupsData]);
+        const shuffledStructures = shuffleArray([...functionalGroupsData]);
+
+        shuffledStructures.forEach(item => {
+            const draggable = document.createElement('div');
+            draggable.className = 'draggable';
+            draggable.textContent = item.structure;
+            draggable.draggable = true;
+            draggable.dataset.id = item.name; // Use name as a unique ID
+            structuresCol.appendChild(draggable);
+        });
+
+        shuffledNames.forEach(item => {
+            const droptarget = document.createElement('div');
+            droptarget.className = 'droptarget';
+            droptarget.dataset.id = item.name;
+            droptarget.innerHTML = `<span class="name">${item.name}</span><div class="placeholder"></div>`;
+            namesCol.appendChild(droptarget);
+        });
+
+        matcherContainer.appendChild(namesCol);
+        matcherContainer.appendChild(structuresCol);
+
+        // Drag and Drop Logic
+        const draggables = document.querySelectorAll('.draggable');
+        const droptargets = document.querySelectorAll('.droptarget');
+
+        draggables.forEach(draggable => {
+            draggable.addEventListener('dragstart', () => {
+                draggable.style.opacity = '0.5';
+            });
+            draggable.addEventListener('dragend', () => {
+                draggable.style.opacity = '1';
+            });
+        });
+
+        droptargets.forEach(target => {
+            target.addEventListener('dragover', e => {
+                e.preventDefault();
+                if (!target.classList.contains('correct')) {
+                    target.classList.add('drag-over');
+                }
+            });
+            target.addEventListener('dragleave', () => {
+                target.classList.remove('drag-over');
+            });
+            target.addEventListener('drop', e => {
+                e.preventDefault();
+                target.classList.remove('drag-over');
+                const draggedId = document.querySelector('.draggable[style*="opacity: 0.5"]').dataset.id;
+                
+                if (target.dataset.id === draggedId && !target.classList.contains('correct')) {
+                    const draggedElement = document.querySelector(`.draggable[data-id="${draggedId}"]`);
+                    target.querySelector('.placeholder').replaceWith(draggedElement);
+                    target.classList.add('correct');
+                    draggedElement.draggable = false;
+                    draggedElement.style.cursor = 'default';
+                    correctMatches++;
+
+                    if (correctMatches === functionalGroupsData.length) {
+                        setTimeout(() => alert('Congratulations! All matched correctly!'), 200);
+                    }
+                }
+            });
+        });
+    };
+
+    resetMatcherBtn.addEventListener('click', setupMatcher);
+    setupMatcher(); // Initial call
+
+});
+</script>
+</body>
+</html>

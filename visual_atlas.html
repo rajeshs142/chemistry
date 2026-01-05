@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NCERT Class 10 Visual Chemistry Atlas</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --bg: #f8fafc;
+            --sidebar: #1e293b;
+        }
+        body { margin: 0; font-family: sans-serif; display: flex; height: 100vh; background: var(--bg); }
+        
+        /* Sidebar */
+        #sidebar { width: 300px; background: var(--sidebar); color: white; display: flex; flex-direction: column; }
+        .nav-item { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #334155; transition: 0.3s; }
+        .nav-item:hover { background: #334155; }
+        .nav-item.active { background: var(--primary); }
+
+        /* Main Area */
+        #content { flex-grow: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .diagram-container { 
+            background: white; padding: 30px; border-radius: 15px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 800px;
+            text-align: center;
+        }
+        canvas { border: 1px solid #e2e8f0; border-radius: 8px; background: #fff; margin-top: 20px; }
+        
+        .description { text-align: left; margin-top: 20px; line-height: 1.6; color: #475569; }
+        .label-tag { font-weight: bold; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div id="sidebar">
+    <div style="padding: 20px; font-weight: bold; font-size: 1.2rem; background: #0f172a;">NCERT Atlas</div>
+    <div class="nav-item active" onclick="loadDiagram('electrolysis')">1. Electrolysis of Water</div>
+    <div class="nav-item" onclick="loadDiagram('phscale')">2. pH Scale & Indicators</div>
+    <div class="nav-item" onclick="loadDiagram('chlor')">3. Chlor-Alkali Process</div>
+    <div class="nav-item" onclick="loadDiagram('ionic')">4. Ionic Bonding (NaCl)</div>
+    <div class="nav-item" onclick="loadDiagram('micelle')">5. Micelle (Soap Action)</div>
+</div>
+
+<div id="content">
+    <div class="diagram-container">
+        <h2 id="diag-title">Electrolysis of Water</h2>
+        <div id="diag-desc" class="description"></div>
+        <canvas id="mainCanvas" width="700" height="400"></canvas>
+        <div id="controls" style="margin-top: 20px;"></div>
+    </div>
+</div>
+
+<script>
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+    let animationId;
+
+    const diagrams = {
+        electrolysis: {
+            title: "Electrolysis of Water (Chapter 1)",
+            desc: "Passing electric current through water decomposes it into Hydrogen and Oxygen. Note that the volume of Hydrogen is <b>double</b> that of Oxygen.",
+            draw: () => {
+                let frame = 0;
+                function animate() {
+                    ctx.clearRect(0,0,700,400);
+                    // Draw Beaker
+                    ctx.strokeStyle = "#94a3b8"; ctx.lineWidth = 4;
+                    ctx.strokeRect(200, 100, 300, 250);
+                    ctx.fillStyle = "#e0f2fe"; ctx.fillRect(200, 150, 300, 200);
+
+                    // Electrodes
+                    ctx.fillStyle = "#334155";
+                    ctx.fillRect(260, 200, 20, 150); // Cathode
+                    ctx.fillRect(420, 200, 20, 150); // Anode
+                    
+                    // Bubbles (H2 - Cathode - Double)
+                    ctx.fillStyle = "rgba(255,255,255,0.8)";
+                    for(let i=0; i<10; i++) {
+                        ctx.beginPath();
+                        ctx.arc(270 + Math.sin(frame*0.1+i)*5, 300 - (frame+i*20)%150, 4, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                    // Bubbles (O2 - Anode - Single)
+                    for(let i=0; i<5; i++) {
+                        ctx.beginPath();
+                        ctx.arc(430 + Math.sin(frame*0.1+i)*5, 300 - (frame+i*40)%150, 4, 0, Math.PI*2);
+                        ctx.fill();
+                    }
+                    
+                    ctx.fillStyle = "black"; ctx.font = "bold 14px Arial";
+                    ctx.fillText("Cathode (-)", 240, 370); ctx.fillText("Anode (+)", 410, 370);
+                    ctx.fillStyle = "#2563eb";
+                    ctx.fillText("H₂ Gas (2 Vol)", 230, 130);
+                    ctx.fillText("O₂ Gas (1 Vol)", 400, 130);
+                    
+                    frame++;
+                    animationId = requestAnimationFrame(animate);
+                }
+                animate();
+            }
+        },
+        phscale: {
+            title: "pH Scale (Chapter 2)",
+            desc: "A scale for measuring hydrogen ion concentration. 0 is highly acidic, 7 is neutral, and 14 is highly alkaline.",
+            draw: () => {
+                ctx.clearRect(0,0,700,400);
+                const colors = ["#ef4444", "#f97316", "#facc15", "#84cc16", "#22c55e", "#0ea5e9", "#2563eb", "#4338ca"];
+                
+                for(let i=0; i<=14; i++) {
+                    const x = 50 + (i * 42);
+                    const hue = (i / 14) * 280;
+                    ctx.fillStyle = `hsl(${hue}, 80%, 50%)`;
+                    ctx.fillRect(x, 150, 40, 100);
+                    ctx.fillStyle = "black"; ctx.fillText(i, x+15, 270);
+                }
+                ctx.font = "bold 16px Arial";
+                ctx.fillText("← Acidic (H+ Increases)", 50, 130);
+                ctx.fillText("Basic (OH- Increases) →", 450, 130);
+                ctx.fillText("Neutral (Water)", 320, 300);
+            }
+        },
+        ionic: {
+            title: "Ionic Bonding - NaCl (Chapter 3)",
+            desc: "Transfer of electrons from a metal (Sodium) to a non-metal (Chlorine) to complete octets.",
+            draw: () => {
+                let x = 0;
+                function animate() {
+                    ctx.clearRect(0,0,700,400);
+                    // Na
+                    ctx.beginPath(); ctx.arc(200, 200, 40, 0, Math.PI*2);
+                    ctx.fillStyle = "#818cf8"; ctx.fill();
+                    ctx.fillStyle = "white"; ctx.fillText("Na", 190, 205);
+                    
+                    // Cl
+                    ctx.beginPath(); ctx.arc(500, 200, 60, 0, Math.PI*2);
+                    ctx.fillStyle = "#4ade80"; ctx.fill();
+                    ctx.fillStyle = "black"; ctx.fillText("Cl", 490, 205);
+
+                    // Moving Electron
+                    let electronX = 240 + (x % 260);
+                    ctx.beginPath(); ctx.arc(electronX, 200, 6, 0, Math.PI*2);
+                    ctx.fillStyle = "red"; ctx.fill();
+                    ctx.fillStyle = "black"; ctx.fillText("e-", electronX-5, 190);
+
+                    ctx.fillText("Sodium loses 1 electron", 130, 300);
+                    ctx.fillText("Chlorine gains 1 electron", 430, 300);
+
+                    x += 2;
+                    animationId = requestAnimationFrame(animate);
+                }
+                animate();
+            }
+        },
+        micelle: {
+            title: "Cleansing Action of Soap (Chapter 4)",
+            desc: "Soap molecules form micelles where the <b>hydrophobic tail</b> attaches to dirt/oil and the <b>hydrophilic head</b> faces water.",
+            draw: () => {
+                ctx.clearRect(0,0,700,400);
+                // Grease Drop
+                ctx.beginPath(); ctx.arc(350, 200, 40, 0, Math.PI*2);
+                ctx.fillStyle = "#713f12"; ctx.fill();
+                ctx.fillStyle = "white"; ctx.fillText("Grease/Oil", 320, 205);
+
+                // Soap Molecules
+                for(let i=0; i<12; i++) {
+                    const angle = (i/12) * Math.PI * 2;
+                    const x1 = 350 + Math.cos(angle) * 45;
+                    const y1 = 200 + Math.sin(angle) * 45;
+                    const x2 = 350 + Math.cos(angle) * 120;
+                    const y2 = 200 + Math.sin(angle) * 120;
+
+                    // Tail (Hydrophobic)
+                    ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+                    ctx.strokeStyle = "#334155"; ctx.lineWidth = 3; ctx.stroke();
+                    // Head (Hydrophilic)
+                    ctx.beginPath(); ctx.arc(x2, y2, 8, 0, Math.PI*2);
+                    ctx.fillStyle = "#38bdf8"; ctx.fill();
+                }
+                ctx.fillStyle = "black";
+                ctx.fillText("Hydrophilic Head (Attracted to Water)", 450, 80);
+                ctx.fillText("Hydrophobic Tail (Attracted to Oil)", 100, 80);
+            }
+        },
+        chlor: {
+            title: "Chlor-Alkali Process (Chapter 2)",
+            desc: "Electrolysis of Brine (NaCl solution) produces Chlorine gas at Anode, Hydrogen gas at Cathode, and Sodium Hydroxide near the cathode.",
+            draw: () => {
+                ctx.clearRect(0,0,700,400);
+                ctx.lineWidth = 3;
+                ctx.strokeRect(150, 100, 400, 200); // Tank
+                
+                // Partition
+                ctx.setLineDash([5, 5]);
+                ctx.moveTo(350, 100); ctx.lineTo(350, 300); ctx.stroke();
+                ctx.setLineDash([]);
+
+                ctx.fillStyle = "#334155";
+                ctx.fillRect(200, 120, 20, 200); // Anode
+                ctx.fillRect(480, 120, 20, 200); // Cathode
+
+                ctx.fillStyle = "#16a34a"; ctx.fillText("Cl₂ Gas (Anode)", 160, 80);
+                ctx.fillStyle = "#ef4444"; ctx.fillText("H₂ Gas (Cathode)", 440, 80);
+                ctx.fillStyle = "#2563eb"; ctx.fillText("NaOH Solution forms here", 400, 330);
+                ctx.fillStyle = "black"; ctx.fillText("Brine (NaCl + Water) In", 50, 200);
+            }
+        }
+    };
+
+    function loadDiagram(key) {
+        if(animationId) cancelAnimationFrame(animationId);
+        const diag = diagrams[key];
+        document.getElementById('diag-title').innerText = diag.title;
+        document.getElementById('diag-desc').innerHTML = diag.desc;
+        
+        // Update Sidebar UI
+        document.querySelectorAll('.nav-item').forEach(el => {
+            el.classList.toggle('active', el.innerText.toLowerCase().includes(key));
+        });
+
+        diag.draw();
+    }
+
+    // Start with first diagram
+    loadDiagram('electrolysis');
+</script>
+
+</body>
+</html>

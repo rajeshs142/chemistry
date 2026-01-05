@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CBSE Class 10 Chemistry - Complete Reference</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --sidebar-width: 300px;
+            --border-radius: 10px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 3px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .logo p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .search-box {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 15px;
+            border-radius: 50px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 2px var(--secondary-color);
+        }
+
+        .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .nav-section {
+            padding: 10px 0;
+        }
+
+        .section-title {
+            padding: 15px 20px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.7;
+            font-weight: 600;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-bottom: 2px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1rem;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-left-color: var(--secondary-color);
+        }
+
+        .nav-links a.active {
+            background-color: rgba(52, 152, 219, 0.2);
+            color: white;
+            border-left-color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        .nav-links i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            width: 24px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.85rem;
+            opacity: 0.7;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .content-header {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eaeaea;
+        }
+
+        .content-header h1 {
+            color: var(--primary-color);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .content-header p {
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 800px;
+        }
+
+        .chapter-info {
+            background-color: white;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .chapter-info h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--secondary-color);
+            display: inline-block;
+        }
+
+        .chapter-info p {
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .chapter-stats {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background-color: var(--light-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--secondary-color);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        /* Cards Grid */
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            transition: var(--transition);
+            height: 100%;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            padding: 20px;
+            background-color: var(--secondary-color);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header h3 {
+            font-size: 1.3rem;
+            margin: 0;
+        }
+
+        .card-type {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .card-body {
+            padding: 25px;
+        }
+
+        .card-info {
+            margin-bottom: 20px;
+        }
+
+        .info-row {
+            display: flex;
+            margin-bottom: 12px;
+            align-items: flex-start;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: var(--primary-color);
+            width: 120px;
+            flex-shrink: 0;
+        }
+
+        .info-value {
+            color: #555;
+            flex: 1;
+        }
+
+        .formula-box {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--dark-color);
+            margin: 15px 0;
+            border-left: 4px solid var(--secondary-color);
+        }
+
+        .uses-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .uses-list li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .uses-list li:last-child {
+            border-bottom: none;
+        }
+
+        .uses-list i {
+            color: var(--secondary-color);
+            margin-right: 10px;
+            margin-top: 3px;
+        }
+
+        /* Table View */
+        .table-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-top: 30px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: left;
+            padding: 18px 15px;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            vertical-align: top;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* Toggle View */
+        .view-toggle {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            background-color: white;
+            border: 1px solid #ddd;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .toggle-btn:first-child {
+            border-radius: 8px 0 0 8px;
+            border-right: none;
+        }
+
+        .toggle-btn:last-child {
+            border-radius: 0 8px 8px 0;
+        }
+
+        .toggle-btn.active {
+            background-color: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .cards-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: auto;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-links {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .nav-links li {
+                flex-shrink: 0;
+            }
+            
+            .nav-links a {
+                white-space: nowrap;
+            }
+            
+            .section-title {
+                display: none;
+            }
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .empty-state i {
+            font-size: 4rem;
+            color: #ddd;
+            margin-bottom: 20px;
+        }
+
+        .empty-state h3 {
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #999;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <h1><i class="fas fa-flask"></i> CBSE ChemXpert</h1>
+            <p>Class 10 Chemistry Complete Guide</p>
+        </div>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search compounds, formulas, uses...">
+        </div>
+        
+        <div class="nav-section">
+            <div class="section-title">Chapters</div>
+            <ul class="nav-links">
+                <li><a href="#" class="active" data-section="welcome"><i class="fas fa-home"></i> Welcome</a></li>
+                <li><a href="#" data-section="acids"><i class="fas fa-tint"></i> Acids</a></li>
+                <li><a href="#" data-section="bases"><i class="fas fa-vial"></i> Bases</a></li>
+                <li><a href="#" data-section="salts"><i class="fas fa-cube"></i> Salts</a></li>
+                <li><a href="#" data-section="metal-oxides"><i class="fas fa-industry"></i> Metal Oxides</a></li>
+                <li><a href="#" data-section="carbon-compounds"><i class="fas fa-atom"></i> Carbon Compounds</a></li>
+            </ul>
+        </div>
+        
+        <div class="nav-section">
+            <div class="section-title">More Categories</div>
+            <ul class="nav-links">
+                <li><a href="#" data-section="alloys"><i class="fas fa-cogs"></i> Alloys</a></li>
+                <li><a href="#" data-section="indicators"><i class="fas fa-eye-dropper"></i> Indicators</a></li>
+                <li><a href="#" data-section="gases"><i class="fas fa-wind"></i> Important Gases</a></li>
+                <li><a href="#" data-section="everyday"><i class="fas fa-home"></i> Everyday Substances</a></li>
+            </ul>
+        </div>
+        
+        <div class="nav-section">
+            <div class="section-title">Quick Access</div>
+            <ul class="nav-links">
+                <li><a href="#" data-section="ncert-ref"><i class="fas fa-book"></i> NCERT References</a></li>
+                <li><a href="#" data-section="all-compounds"><i class="fas fa-list"></i> All Compounds</a></li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <p>CBSE Class 10 Chemistry © 2025</p>
+            <p>Based on NCERT Syllabus</p>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-header">
+            <h1 id="mainTitle">Welcome to CBSE Class 10 Chemistry</h1>
+            <p id="mainDescription">Complete reference for all chemical compounds, formulas, properties and uses as per NCERT syllabus</p>
+            
+            <div class="view-toggle">
+                <button class="toggle-btn active" id="cardViewBtn"><i class="fas fa-th-large"></i> Card View</button>
+                <button class="toggle-btn" id="tableViewBtn"><i class="fas fa-table"></i> Table View</button>
+            </div>
+        </div>
+        
+        <div id="contentArea">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // JSON Data
+        const chemistryData = {
+  "compounds": {
+    "acids": [
+      {
+        "chemical_name": "Hydrogen chloride",
+        "common_name": "Hydrochloric acid",
+        "formula": "HCl",
+        "type": "Mineral acid",
+        "property": "Strong acid, corrosive",
+        "uses": [
+          "Laboratory reagent",
+          "Cleaning metal surfaces (pickling)",
+          "In gastric juice for digestion"
+        ]
+      },
+      {
+        "chemical_name": "Hydrogen sulphate",
+        "common_name": "Sulphuric acid",
+        "formula": "H₂SO₄",
+        "type": "Mineral acid",
+        "property": "Strong acid, oily liquid, dehydrating agent",
+        "uses": [
+          "Manufacture of fertilizers",
+          "Battery acid",
+          "Petroleum refining"
+        ]
+      },
+      {
+        "chemical_name": "Hydrogen nitrate",
+        "common_name": "Nitric acid",
+        "formula": "HNO₃",
+        "type": "Mineral acid",
+        "property": "Strong acid, oxidizing agent",
+        "uses": [
+          "Manufacture of fertilizers",
+          "Production of explosives",
+          "Laboratory reagent"
+        ]
+      },
+      {
+        "chemical_name": "Ethanoic acid",
+        "common_name": "Acetic acid",
+        "formula": "CH₃COOH",
+        "type": "Organic acid",
+        "property": "Weak acid, vinegar contains 5-8%",
+        "uses": [
+          "Vinegar for culinary purposes",
+          "Production of chemicals",
+          "Laboratory reagent"
+        ]
+      }
+    ],
+    
+    "bases": [
+      {
+        "chemical_name": "Sodium hydroxide",
+        "common_name": "Caustic soda",
+        "formula": "NaOH",
+        "type": "Base/Alkali",
+        "property": "Strong base, deliquescent",
+        "uses": [
+          "Manufacture of soap",
+          "Paper making",
+          "Drain cleaner"
+        ]
+      },
+      {
+        "chemical_name": "Potassium hydroxide",
+        "common_name": "Caustic potash",
+        "formula": "KOH",
+        "type": "Base/Alkali",
+        "property": "Strong base",
+        "uses": [
+          "Manufacture of soft soaps",
+          "Electrolyte in batteries"
+        ]
+      },
+      {
+        "chemical_name": "Calcium hydroxide",
+        "common_name": "Slaked lime",
+        "formula": "Ca(OH)₂",
+        "type": "Base",
+        "property": "Moderately strong base",
+        "uses": [
+          "Whitewashing buildings",
+          "Soil treatment",
+          "Preparation of mortar"
+        ]
+      },
+      {
+        "chemical_name": "Magnesium hydroxide",
+        "common_name": "Milk of Magnesia",
+        "formula": "Mg(OH)₂",
+        "type": "Base",
+        "property": "Mild base, insoluble in water",
+        "uses": [
+          "Antacid",
+          "Laxative"
+        ]
+      }
+    ],
+    
+    "salts": [
+      {
+        "chemical_name": "Sodium chloride",
+        "common_name": "Common salt/Table salt",
+        "formula": "NaCl",
+        "type": "Salt",
+        "property": "Neutral, crystalline",
+        "uses": [
+          "Essential for body functions",
+          "Food preservative",
+          "Raw material for chemicals"
+        ]
+      },
+      {
+        "chemical_name": "Sodium carbonate decahydrate",
+        "common_name": "Washing soda",
+        "formula": "Na₂CO₃·10H₂O",
+        "type": "Basic salt",
+        "property": "Alkaline, efflorescent",
+        "uses": [
+          "Cleaning agent",
+          "Water softening",
+          "Manufacture of glass"
+        ]
+      },
+      {
+        "chemical_name": "Sodium hydrogen carbonate",
+        "common_name": "Baking soda",
+        "formula": "NaHCO₃",
+        "type": "Acidic salt",
+        "property": "Mild alkaline, decomposes on heating",
+        "uses": [
+          "Baking agent",
+          "Antacid",
+          "Fire extinguisher"
+        ]
+      },
+      {
+        "chemical_name": "Calcium oxychloride",
+        "common_name": "Bleaching powder",
+        "formula": "CaOCl₂",
+        "type": "Salt",
+        "property": "Oxidizing agent, bleaching property",
+        "uses": [
+          "Bleaching cotton and linen",
+          "Disinfecting water",
+          "Oxidizing agent"
+        ]
+      },
+      {
+        "chemical_name": "Calcium sulphate hemihydrate",
+        "common_name": "Plaster of Paris",
+        "formula": "CaSO₄·½H₂O",
+        "type": "Salt",
+        "property": "Sets to hard mass with water",
+        "uses": [
+          "Making casts for fractures",
+          "Making decorative materials",
+          "Ceiling designs"
+        ]
+      },
+      {
+        "chemical_name": "Calcium sulphate dihydrate",
+        "common_name": "Gypsum",
+        "formula": "CaSO₄·2H₂O",
+        "type": "Salt",
+        "property": "Hydrated salt",
+        "uses": [
+          "Manufacture of Plaster of Paris",
+          "In cement manufacture",
+          "Making chalk"
+        ]
+      },
+      {
+        "chemical_name": "Copper sulphate pentahydrate",
+        "common_name": "Blue vitriol",
+        "formula": "CuSO₄·5H₂O",
+        "type": "Salt",
+        "property": "Blue crystalline, hydrated",
+        "uses": [
+          "Fungicide in agriculture",
+          "Laboratory reagent",
+          "Electroplating"
+        ]
+      }
+    ],
+    
+    "metal_oxides": [
+      {
+        "chemical_name": "Calcium oxide",
+        "common_name": "Quick lime",
+        "formula": "CaO",
+        "type": "Basic oxide",
+        "property": "Reacts vigorously with water",
+        "uses": [
+          "Manufacture of cement",
+          "Soil treatment",
+          "Production of calcium hydroxide"
+        ]
+      },
+      {
+        "chemical_name": "Magnesium oxide",
+        "common_name": "Magnesia",
+        "formula": "MgO",
+        "type": "Basic oxide",
+        "property": "Refractory, high melting point",
+        "uses": [
+          "Refractory material",
+          "Antacid",
+          "Agricultural supplement"
+        ]
+      }
+    ],
+    
+    "carbon_compounds": [
+      {
+        "chemical_name": "Methane",
+        "common_name": "Marsh gas",
+        "formula": "CH₄",
+        "type": "Hydrocarbon (Alkane)",
+        "property": "Simplest alkane, fuel",
+        "uses": [
+          "Domestic fuel (natural gas)",
+          "Manufacture of chemicals"
+        ]
+      },
+      {
+        "chemical_name": "Ethane",
+        "common_name": "None",
+        "formula": "C₂H₆",
+        "type": "Hydrocarbon (Alkane)",
+        "property": "Saturated hydrocarbon",
+        "uses": [
+          "Production of ethylene",
+          "Fuel"
+        ]
+      },
+      {
+        "chemical_name": "Propane",
+        "common_name": "LPG component",
+        "formula": "C₃H₈",
+        "type": "Hydrocarbon (Alkane)",
+        "property": "Gaseous fuel",
+        "uses": [
+          "LPG for cooking",
+          "Industrial fuel"
+        ]
+      },
+      {
+        "chemical_name": "Butane",
+        "common_name": "LPG component",
+        "formula": "C₄H₁₀",
+        "type": "Hydrocarbon (Alkane)",
+        "property": "Gaseous fuel",
+        "uses": [
+          "LPG for cooking",
+          "Cigarette lighters"
+        ]
+      },
+      {
+        "chemical_name": "Ethene",
+        "common_name": "Ethylene",
+        "formula": "C₂H₄",
+        "type": "Hydrocarbon (Alkene)",
+        "property": "Unsaturated, has double bond",
+        "uses": [
+          "Ripening of fruits",
+          "Manufacture of polythene"
+        ]
+      },
+      {
+        "chemical_name": "Ethyne",
+        "common_name": "Acetylene",
+        "formula": "C₂H₂",
+        "type": "Hydrocarbon (Alkyne)",
+        "property": "Unsaturated, has triple bond",
+        "uses": [
+          "Welding and cutting metals",
+          "Production of chemicals"
+        ]
+      },
+      {
+        "chemical_name": "Ethanol",
+        "common_name": "Ethyl alcohol",
+        "formula": "C₂H₅OH",
+        "type": "Alcohol",
+        "property": "Flammable liquid, intoxicating",
+        "uses": [
+          "Alcoholic beverages",
+          "Solvent",
+          "Fuel",
+          "Antiseptic"
+        ]
+      },
+      {
+        "chemical_name": "Ethanoic acid",
+        "common_name": "Acetic acid",
+        "formula": "CH₃COOH",
+        "type": "Carboxylic acid",
+        "property": "Weak acid, sour taste",
+        "uses": [
+          "Vinegar",
+          "Production of chemicals",
+          "Preservative"
+        ]
+      },
+      {
+        "chemical_name": "Ethyl ethanoate",
+        "common_name": "Ethyl acetate",
+        "formula": "CH₃COOC₂H₅",
+        "type": "Ester",
+        "property": "Sweet fruity smell",
+        "uses": [
+          "Solvent for paints",
+          "Artificial fruit flavors",
+          "Perfumes"
+        ]
+      }
+    ],
+    
+    "alloys": [
+      {
+        "name": "Steel",
+        "composition": "Iron + Carbon (0.1-1.5%)",
+        "type": "Alloy",
+        "property": "Strong, hard",
+        "uses": [
+          "Construction",
+          "Automobiles",
+          "Tools and machinery"
+        ]
+      },
+      {
+        "name": "Brass",
+        "composition": "Copper + Zinc",
+        "type": "Alloy",
+        "property": "Malleable, corrosion resistant",
+        "uses": [
+          "Musical instruments",
+          "Decorative items",
+          "Utensils"
+        ]
+      },
+      {
+        "name": "Bronze",
+        "composition": "Copper + Tin",
+        "type": "Alloy",
+        "property": "Hard, corrosion resistant",
+        "uses": [
+          "Statues and monuments",
+          "Coins",
+          "Bearings"
+        ]
+      },
+      {
+        "name": "Solder",
+        "composition": "Lead + Tin",
+        "type": "Alloy",
+        "property": "Low melting point",
+        "uses": [
+          "Joining electrical wires",
+          "Plumbing"
+        ]
+      }
+    ],
+    
+    "indicators": [
+      {
+        "chemical_name": "Litmus",
+        "common_name": "Litmus",
+        "type": "Natural indicator",
+        "property": "Extracted from lichens",
+        "behavior": "Red in acid, blue in base"
+      },
+      {
+        "chemical_name": "Phenolphthalein",
+        "common_name": "Phenolphthalein",
+        "type": "Synthetic indicator",
+        "property": "Colorless in acid, pink in base"
+      },
+      {
+        "chemical_name": "Methyl orange",
+        "common_name": "Methyl orange",
+        "type": "Synthetic indicator",
+        "property": "Red in acid, yellow in base"
+      }
+    ],
+    
+    "important_gases": [
+      {
+        "chemical_name": "Hydrogen",
+        "common_name": "Hydrogen gas",
+        "formula": "H₂",
+        "type": "Non-metal gas",
+        "property": "Lightest gas, combustible",
+        "uses": [
+          "Manufacture of ammonia",
+          "Hydrogenation of oils",
+          "Fuel"
+        ]
+      },
+      {
+        "chemical_name": "Oxygen",
+        "common_name": "Oxygen gas",
+        "formula": "O₂",
+        "type": "Non-metal gas",
+        "property": "Supports combustion",
+        "uses": [
+          "Respiration",
+          "Welding",
+          "Medical use"
+        ]
+      },
+      {
+        "chemical_name": "Nitrogen",
+        "common_name": "Nitrogen gas",
+        "formula": "N₂",
+        "type": "Non-metal gas",
+        "property": "Inert, non-reactive",
+        "uses": [
+          "Manufacture of fertilizers",
+          "Food packaging",
+          "Production of ammonia"
+        ]
+      },
+      {
+        "chemical_name": "Chlorine",
+        "common_name": "Chlorine gas",
+        "formula": "Cl₂",
+        "type": "Non-metal gas",
+        "property": "Greenish-yellow, toxic",
+        "uses": [
+          "Water purification",
+          "Manufacture of chemicals",
+          "Bleaching agent"
+        ]
+      },
+      {
+        "chemical_name": "Carbon dioxide",
+        "common_name": "Carbon dioxide",
+        "formula": "CO₂",
+        "type": "Acidic oxide gas",
+        "property": "Turns lime water milky",
+        "uses": [
+          "Fire extinguishers",
+          "Carbonated drinks",
+          "Photosynthesis"
+        ]
+      },
+      {
+        "chemical_name": "Ammonia",
+        "common_name": "Ammonia gas",
+        "formula": "NH₃",
+        "type": "Base gas",
+        "property": "Pungent smell, alkaline",
+        "uses": [
+          "Manufacture of fertilizers",
+          "Cleaning agent",
+          "Refrigerant"
+        ]
+      }
+    ],
+    
+    "everyday_substances": [
+      {
+        "chemical_name": "Calcium carbonate",
+        "common_name": "Limestone/Marble/Chalk",
+        "formula": "CaCO₃",
+        "type": "Salt",
+        "property": "White solid, decomposes on heating",
+        "uses": [
+          "Building material",
+          "Manufacture of cement",
+          "Writing chalk"
+        ]
+      },
+      {
+        "chemical_name": "Sodium stearate",
+        "common_name": "Soap",
+        "formula": "C₁₇H₃₅COONa",
+        "type": "Salt of fatty acid",
+        "property": "Cleansing agent, forms micelles",
+        "uses": [
+          "Cleaning agent",
+          "Personal hygiene"
+        ]
+      },
+      {
+        "chemical_name": "Sodium dodecylbenzenesulfonate",
+        "common_name": "Detergent",
+        "formula": "C₁₂H₂₅C₆H₄SO₃Na",
+        "type": "Synthetic cleansing agent",
+        "property": "Works in hard water",
+        "uses": [
+          "Cleaning clothes",
+          "Household cleaners"
+        ]
+      },
+      {
+        "chemical_name": "Sucrose",
+        "common_name": "Sugar",
+        "formula": "C₁₂H₂₂O₁₁",
+        "type": "Carbohydrate",
+        "property": "Sweet crystalline solid",
+        "uses": [
+          "Sweetening agent",
+          "Food preservative"
+        ]
+      },
+      {
+        "chemical_name": "Glucose",
+        "common_name": "Grape sugar",
+        "formula": "C₆H₁₂O₆",
+        "type": "Carbohydrate",
+        "property": "Simple sugar, energy source",
+        "uses": [
+          "Energy source in body",
+          "Food industry"
+        ]
+      }
+    ]
+  },
+  
+  "ncert_references": {
+    "chapter_1": [
+      "Magnesium oxide (MgO)",
+      "Hydrogen (H₂)",
+      "Oxygen (O₂)",
+      "Carbon dioxide (CO₂)"
+    ],
+    "chapter_2": [
+      "Hydrochloric acid (HCl)",
+      "Sulphuric acid (H₂SO₄)",
+      "Nitric acid (HNO₃)",
+      "Acetic acid (CH₃COOH)",
+      "Sodium hydroxide (NaOH)",
+      "Calcium hydroxide (Ca(OH)₂)",
+      "Sodium chloride (NaCl)",
+      "Washing soda (Na₂CO₃·10H₂O)",
+      "Baking soda (NaHCO₃)",
+      "Bleaching powder (CaOCl₂)",
+      "Plaster of Paris (CaSO₄·½H₂O)",
+      "Gypsum (CaSO₄·2H₂O)"
+    ],
+    "chapter_3": [
+      "Iron (Fe)",
+      "Aluminium (Al)",
+      "Copper (Cu)",
+      "Zinc (Zn)",
+      "Gold (Au)",
+      "Silver (Ag)",
+      "Carbon (diamond, graphite)",
+      "Sulphur (S)",
+      "Steel",
+      "Brass",
+      "Bronze",
+      "Solder"
+    ],
+    "chapter_4": [
+      "Methane (CH₄)",
+      "Ethane (C₂H₆)",
+      "Propane (C₃H₈)",
+      "Butane (C₄H₁₀)",
+      "Ethene (C₂H₄)",
+      "Ethyne (C₂H₂)",
+      "Ethanol (C₂H₅OH)",
+      "Acetic acid (CH₃COOH)",
+      "Ethyl acetate (CH₃COOC₂H₅)",
+      "Soap (Sodium stearate)",
+      "Detergent",
+      "Glucose (C₆H₁₂O₆)",
+      "Sucrose (C₁₂H₂₂O₁₁)"
+    ]
+  }
+};
+
+        // App State
+        let currentView = 'cards'; // 'cards' or 'table'
+        let currentSection = 'welcome';
+        let filteredData = null;
+
+        // DOM Elements
+        const contentArea = document.getElementById('contentArea');
+        const searchInput = document.getElementById('searchInput');
+        const cardViewBtn = document.getElementById('cardViewBtn');
+        const tableViewBtn = document.getElementById('tableViewBtn');
+        const mainTitle = document.getElementById('mainTitle');
+        const mainDescription = document.getElementById('mainDescription');
+        const navLinks = document.querySelectorAll('.nav-links a');
+
+        // Section Titles and Descriptions
+        const sectionInfo = {
+            'welcome': {
+                title: 'Welcome to CBSE Class 10 Chemistry',
+                description: 'Complete reference for all chemical compounds, formulas, properties and uses as per NCERT syllabus'
+            },
+            'acids': {
+                title: 'Acids',
+                description: 'Substances that produce H⁺ ions in water, taste sour, and turn blue litmus red'
+            },
+            'bases': {
+                title: 'Bases',
+                description: 'Substances that produce OH⁻ ions in water, taste bitter, and turn red litmus blue'
+            },
+            'salts': {
+                title: 'Salts',
+                description: 'Ionic compounds formed by neutralization of acids and bases'
+            },
+            'metal-oxides': {
+                title: 'Metal Oxides',
+                description: 'Oxides of metals that are generally basic in nature'
+            },
+            'carbon-compounds': {
+                title: 'Carbon Compounds',
+                description: 'Organic compounds containing carbon atoms, including hydrocarbons and functional groups'
+            },
+            'alloys': {
+                title: 'Alloys',
+                description: 'Homogeneous mixtures of two or more metals, or a metal and a non-metal'
+            },
+            'indicators': {
+                title: 'Indicators',
+                description: 'Substances that change color to show the presence of acids or bases'
+            },
+            'gases': {
+                title: 'Important Gases',
+                description: 'Gaseous elements and compounds with important chemical properties and uses'
+            },
+            'everyday': {
+                title: 'Everyday Substances',
+                description: 'Common chemical substances we encounter in daily life'
+            },
+            'ncert-ref': {
+                title: 'NCERT Chapter References',
+                description: 'Compounds mentioned in each chapter of NCERT Class 10 Chemistry textbook'
+            },
+            'all-compounds': {
+                title: 'All Compounds',
+                description: 'Complete list of all chemical compounds in CBSE Class 10 syllabus'
+            }
+        };
+
+        // Initialize the app
+        function init() {
+            loadWelcomePage();
+            setupEventListeners();
+        }
+
+        // Set up event listeners
+        function setupEventListeners() {
+            // Navigation links
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const section = link.getAttribute('data-section');
+                    loadSection(section);
+                    
+                    // Update active state
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    link.classList.add('active');
+                });
+            });
+
+            // View toggle buttons
+            cardViewBtn.addEventListener('click', () => {
+                setView('cards');
+                renderCurrentSection();
+            });
+
+            tableViewBtn.addEventListener('click', () => {
+                setView('table');
+                renderCurrentSection();
+            });
+
+            // Search functionality
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase().trim();
+                if (searchTerm.length >= 2) {
+                    searchCompounds(searchTerm);
+                } else {
+                    filteredData = null;
+                    renderCurrentSection();
+                }
+            });
+        }
+
+        // Set current view
+        function setView(view) {
+            currentView = view;
+            cardViewBtn.classList.toggle('active', view === 'cards');
+            tableViewBtn.classList.toggle('active', view === 'table');
+        }
+
+        // Load a section
+        function loadSection(section) {
+            currentSection = section;
+            
+            // Update main title and description
+            if (sectionInfo[section]) {
+                mainTitle.textContent = sectionInfo[section].title;
+                mainDescription.textContent = sectionInfo[section].description;
+            }
+            
+            // Clear search
+            searchInput.value = '';
+            filteredData = null;
+            
+            // Render section
+            renderCurrentSection();
+        }
+
+        // Render current section based on view
+        function renderCurrentSection() {
+            if (currentSection === 'welcome') {
+                loadWelcomePage();
+                return;
+            }
+            
+            if (currentSection === 'ncert-ref') {
+                loadNcertReferences();
+                return;
+            }
+            
+            if (currentSection === 'all-compounds') {
+                loadAllCompounds();
+                return;
+            }
+            
+            const dataKey = getDataKeyForSection(currentSection);
+            const data = filteredData || chemistryData.compounds[dataKey];
+            
+            if (!data) {
+                contentArea.innerHTML = `<div class="empty-state">
+                    <i class="fas fa-flask"></i>
+                    <h3>No data available</h3>
+                    <p>The selected section does not contain any data.</p>
+                </div>`;
+                return;
+            }
+            
+            if (currentView === 'cards') {
+                renderCards(data, dataKey);
+            } else {
+                renderTable(data, dataKey);
+            }
+        }
+
+        // Get data key for section
+        function getDataKeyForSection(section) {
+            const mapping = {
+                'acids': 'acids',
+                'bases': 'bases',
+                'salts': 'salts',
+                'metal-oxides': 'metal_oxides',
+                'carbon-compounds': 'carbon_compounds',
+                'alloys': 'alloys',
+                'indicators': 'indicators',
+                'gases': 'important_gases',
+                'everyday': 'everyday_substances'
+            };
+            return mapping[section];
+        }
+
+        // Load welcome page
+        function loadWelcomePage() {
+            mainTitle.textContent = sectionInfo.welcome.title;
+            mainDescription.textContent = sectionInfo.welcome.description;
+            
+            const totalCompounds = Object.values(chemistryData.compounds).reduce((total, category) => total + category.length, 0);
+            const totalCategories = Object.keys(chemistryData.compounds).length;
+            
+            contentArea.innerHTML = `
+                <div class="chapter-info">
+                    <h2>CBSE Class 10 Chemistry Complete Reference</h2>
+                    <p>This comprehensive guide contains all chemical compounds, formulas, properties, and uses as per the latest NCERT Class 10 CBSE syllabus (2025-26). Use the sidebar to navigate through different categories of compounds.</p>
+                    
+                    <div class="chapter-stats">
+                        <div class="stat-box">
+                            <span class="stat-number">${totalCompounds}</span>
+                            <span class="stat-label">Total Compounds</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">${totalCategories}</span>
+                            <span class="stat-label">Categories</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number">4</span>
+                            <span class="stat-label">Chapters</span>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 30px;">How to Use This Reference</h3>
+                    <ul class="uses-list" style="margin-top: 15px;">
+                        <li><i class="fas fa-chevron-right"></i> <strong>Browse by Category:</strong> Use the sidebar to navigate through acids, bases, salts, carbon compounds, etc.</li>
+                        <li><i class="fas fa-chevron-right"></i> <strong>Search:</strong> Use the search box to find specific compounds by name, formula, or use.</li>
+                        <li><i class="fas fa-chevron-right"></i> <strong>Toggle View:</strong> Switch between card view and table view using the buttons above.</li>
+                        <li><i class="fas fa-chevron-right"></i> <strong>NCERT Reference:</strong> Check which compounds are mentioned in each NCERT chapter.</li>
+                    </ul>
+                    
+                    <h3 style="margin-top: 30px;">NCERT Chapters Covered</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 15px; margin-top: 15px;">
+                        <div style="background: #e3f2fd; padding: 15px; border-radius: 8px; border-left: 4px solid #2196f3;">
+                            <h4 style="margin: 0 0 10px 0; color: #1565c0;">Chapter 1</h4>
+                            <p style="margin: 0; color: #333;"><strong>Chemical Reactions and Equations</strong></p>
+                        </div>
+                        <div style="background: #f3e5f5; padding: 15px; border-radius: 8px; border-left: 4px solid #9c27b0;">
+                            <h4 style="margin: 0 0 10px 0; color: #6a1b9a;">Chapter 2</h4>
+                            <p style="margin: 0; color: #333;"><strong>Acids, Bases and Salts</strong></p>
+                        </div>
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;">
+                            <h4 style="margin: 0 0 10px 0; color: #2e7d32;">Chapter 3</h4>
+                            <p style="margin: 0; color: #333;"><strong>Metals and Non-metals</strong></p>
+                        </div>
+                        <div style="background: #fff3e0; padding: 15px; border-radius: 8px; border-left: 4px solid #ff9800;">
+                            <h4 style="margin: 0 0 10px 0; color: #ef6c00;">Chapter 4</h4>
+                            <p style="margin: 0; color: #333;"><strong>Carbon and its Compounds</strong></p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Load NCERT references
+        function loadNcertReferences() {
+            let html = `<div class="chapter-info">
+                <h2>NCERT Chapter References</h2>
+                <p>Below are the compounds mentioned in each chapter of the NCERT Class 10 Chemistry textbook. This helps you know which compounds to focus on for each chapter.</p>`;
+            
+            for (const chapter in chemistryData.ncert_references) {
+                const chapterName = getChapterName(chapter);
+                const compounds = chemistryData.ncert_references[chapter];
+                
+                html += `
+                    <div style="margin: 25px 0; padding: 20px; background: #f8f9fa; border-radius: 8px;">
+                        <h3 style="color: var(--primary-color); margin-bottom: 15px;">${chapterName}</h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+                            ${compounds.map(compound => 
+                                `<span style="background: white; padding: 8px 15px; border-radius: 50px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-size: 0.9rem;">${compound}</span>`
+                            ).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            
+            html += `</div>`;
+            contentArea.innerHTML = html;
+        }
+
+        // Get chapter name from key
+        function getChapterName(key) {
+            const names = {
+                'chapter_1': 'Chapter 1: Chemical Reactions and Equations',
+                'chapter_2': 'Chapter 2: Acids, Bases and Salts',
+                'chapter_3': 'Chapter 3: Metals and Non-metals',
+                'chapter_4': 'Chapter 4: Carbon and its Compounds'
+            };
+            return names[key] || key;
+        }
+
+        // Load all compounds in one view
+        function loadAllCompounds() {
+            // Combine all compounds
+            let allCompounds = [];
+            for (const category in chemistryData.compounds) {
+                const compounds = chemistryData.compounds[category];
+                compounds.forEach(compound => {
+                    compound.category = category.replace('_', ' ');
+                    allCompounds.push(compound);
+                });
+            }
+            
+            if (currentView === 'cards') {
+                renderCards(allCompounds, 'all');
+            } else {
+                renderTable(allCompounds, 'all');
+            }
+        }
+
+        // Render cards view
+        function renderCards(data, category) {
+            if (data.length === 0) {
+                contentArea.innerHTML = `<div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>No compounds found</h3>
+                    <p>Try adjusting your search terms or browse through the categories in the sidebar.</p>
+                </div>`;
+                return;
+            }
+            
+            let html = `<div class="cards-grid">`;
+            
+            data.forEach(item => {
+                const categoryName = item.category || category;
+                const hasFormula = item.formula !== undefined;
+                const hasCommonName = item.common_name && item.common_name !== 'None';
+                
+                html += `
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>${item.chemical_name || item.name}</h3>
+                            <span class="card-type">${item.type}</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="card-info">
+                                ${hasCommonName ? `
+                                    <div class="info-row">
+                                        <div class="info-label">Common Name:</div>
+                                        <div class="info-value">${item.common_name}</div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${categoryName && category !== 'all' ? `
+                                    <div class="info-row">
+                                        <div class="info-label">Category:</div>
+                                        <div class="info-value">${formatCategoryName(categoryName)}</div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${hasFormula ? `
+                                    <div class="formula-box">${item.formula}</div>
+                                ` : ''}
+                                
+                                <div class="info-row">
+                                    <div class="info-label">Properties:</div>
+                                    <div class="info-value">${item.property || item.behavior || 'N/A'}</div>
+                                </div>
+                            </div>
+                            
+                            ${item.uses ? `
+                                <div class="info-row">
+                                    <div class="info-label">Uses:</div>
+                                    <div class="info-value">
+                                        <ul class="uses-list">
+                                            ${item.uses.map(use => `<li><i class="fas fa-check-circle"></i> ${use}</li>`).join('')}
+                                        </ul>
+                                    </div>
+                                </div>
+                            ` : ''}
+                            
+                            ${item.composition ? `
+                                <div class="info-row">
+                                    <div class="info-label">Composition:</div>
+                                    <div class="info-value">${item.composition}</div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            html += `</div>`;
+            contentArea.innerHTML = html;
+        }
+
+        // Render table view
+        function renderTable(data, category) {
+            if (data.length === 0) {
+                contentArea.innerHTML = `<div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>No compounds found</h3>
+                    <p>Try adjusting your search terms or browse through the categories in the sidebar.</p>
+                </div>`;
+                return;
+            }
+            
+            const isAllCompounds = category === 'all';
+            
+            let html = `<div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            ${isAllCompounds ? '<th>Category</th>' : ''}
+                            <th>Chemical Name</th>
+                            <th>Common Name</th>
+                            <th>Formula</th>
+                            <th>Type</th>
+                            <th>Properties</th>
+                            <th>Uses</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+            
+            data.forEach(item => {
+                const usesText = item.uses ? item.uses.join(', ') : 'N/A';
+                const commonName = item.common_name && item.common_name !== 'None' ? item.common_name : '—';
+                const formula = item.formula || '—';
+                const categoryName = item.category ? formatCategoryName(item.category) : formatCategoryName(category);
+                
+                html += `
+                    <tr>
+                        ${isAllCompounds ? `<td>${categoryName}</td>` : ''}
+                        <td><strong>${item.chemical_name || item.name}</strong></td>
+                        <td>${commonName}</td>
+                        <td><code>${formula}</code></td>
+                        <td>${item.type}</td>
+                        <td>${item.property || item.behavior || '—'}</td>
+                        <td>${usesText}</td>
+                    </tr>
+                `;
+            });
+            
+            html += `</tbody></table></div>`;
+            contentArea.innerHTML = html;
+        }
+
+        // Format category name
+        function formatCategoryName(category) {
+            return category
+                .replace(/_/g, ' ')
+                .replace(/\b\w/g, l => l.toUpperCase());
+        }
+
+        // Search compounds
+        function searchCompounds(searchTerm) {
+            // Combine all compounds for searching
+            let allCompounds = [];
+            for (const category in chemistryData.compounds) {
+                const compounds = chemistryData.compounds[category];
+                compounds.forEach(compound => {
+                    compound.category = category;
+                    allCompounds.push(compound);
+                });
+            }
+            
+            // Search in all fields
+            filteredData = allCompounds.filter(compound => {
+                const searchableText = [
+                    compound.chemical_name || '',
+                    compound.common_name || '',
+                    compound.name || '',
+                    compound.formula || '',
+                    compound.type || '',
+                    compound.property || '',
+                    compound.behavior || '',
+                    compound.composition || '',
+                    ...(compound.uses || [])
+                ].join(' ').toLowerCase();
+                
+                return searchableText.includes(searchTerm);
+            });
+            
+            // Update UI for search results
+            if (filteredData.length > 0) {
+                mainTitle.textContent = 'Search Results';
+                mainDescription.textContent = `Found ${filteredData.length} compound(s) matching "${searchTerm}"`;
+                
+                if (currentView === 'cards') {
+                    renderCards(filteredData, 'search');
+                } else {
+                    renderTable(filteredData, 'search');
+                }
+            } else {
+                contentArea.innerHTML = `<div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h3>No compounds found</h3>
+                    <p>No compounds match your search for "${searchTerm}". Try different keywords or browse through the categories.</p>
+                </div>`;
+            }
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
